@@ -757,7 +757,7 @@ namespace SSD_Components
 						domain->Chip_No_Per_Zone == chip_no_per_channel && 
 						domain->Die_No_Per_Zone == die_no_per_chip && 
 						domain->Plane_No_Per_Zone == plane_no_per_die) { // maximum parallelism
-							//std::cout << "nysong - this is the maximum parallelism in one zone" << std::endl;
+							std::cout << "nysong - this is the maximum parallelism in one zone" << std::endl;
 							//blockID = zoneOffset / block_size_in_byte;
 							pageID = zoneOffset ;
 							
@@ -768,7 +768,24 @@ namespace SSD_Components
 							targetAddress.PlaneID = domain->Plane_ids[(unsigned int)(index / (channel_count*die_no_per_chip) % plane_no_per_die)];
 							// targetAddress.BlockID = (unsigned int)((zoneID * block_no_per_subzone) + ((pageID / total_level) / pages_no_per_block));
 							// targetAddress.PageID = (unsigned int)((pageID / total_level) % pages_no_per_block);
-							targetAddress.BlockID = (unsigned int)((lpn / total_level) / pages_no_per_block); //TODO:can I use lpn here?
+							targetAddress.BlockID = (unsigned int)((lpn / total_level) / pages_no_per_block);
+							targetAddress.PageID = (unsigned int)((lpn / total_level) % pages_no_per_block);
+						} else { // any parallelism between max and min by Chai
+							std::cout << "chai -  CDPW("
+									<< domain->Channel_No_Per_Zone
+									<< domain->Die_No_Per_Zone
+									<< domain->Plane_No_Per_Zone
+									<< domain->Chip_No_Per_Zone
+									<< ") parallelism in one zone" << std::endl;
+							pageID = zoneOffset ;
+							
+							index = pageID;
+							targetAddress.ChannelID = domain->Channel_ids[(unsigned int)(index % domain->Channel_No_Per_Zone)];
+							targetAddress.ChipID = domain->Chip_ids[(unsigned int)((index / (domain->Channel_No_Per_Zone * domain->Die_No_Per_Zone * domain->Plane_No_Per_Zone)) % domain->Chip_No_Per_Zone)];
+							targetAddress.DieID = domain->Die_ids[(unsigned int)(index / domain->Channel_No_Per_Zone % domain->Die_No_Per_Zone)];
+							targetAddress.PlaneID = domain->Plane_ids[(unsigned int)(index / (domain->Channel_No_Per_Zone*domain->Die_No_Per_Zone) % domain->Plane_No_Per_Zone)];
+							std::cout <<"Assigned CDPW="<<targetAddress.ChannelID<<targetAddress.DieID<<targetAddress.PlaneID<<targetAddress.ChipID<<std::endl;
+							targetAddress.BlockID = (unsigned int)((lpn / total_level) / pages_no_per_block);
 							targetAddress.PageID = (unsigned int)((lpn / total_level) % pages_no_per_block);
 						}
 				}
