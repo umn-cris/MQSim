@@ -68,7 +68,7 @@ int main(int argc, char** argv) {
         //sscanf(arrival_time.c_str(), "%llu", &prev_arrival_time); 
         //sscanf(start_LBA.c_str(), "%llu", &prev_start_LBA); 
 
-        prev_arrival_time = prev_arrival_time + ((rand() % 15) * 1000);
+        prev_arrival_time = prev_arrival_time + ((rand() % 15 + 1) * 1000);
         prev_start_LBA = prev_start_LBA + request_size_in_KB * 2; // 2 == 1024 / sector_size_in_bytes;
     }
     writeFile.close();
