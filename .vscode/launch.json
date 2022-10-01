@@ -9,12 +9,18 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/MQSim",
-            "args": ["-i","ssdconfig_zone.xml","-w","workload.xml"],
+            "args": ["-i","ssdconfig_zone.xml","-w","workload/workload_zone_alloc.xml"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
+            "setupCommands": [
+
+                { "text": "-enable-pretty-printing", "description": "enable pretty printing", "ignoreFailures": true },
+
+                { "text": "handle SIGPIPE nostop noprint pass", "description": "ignore SIGPIPE", "ignoreFailures": true }  
+            ]
         }
 
     ]

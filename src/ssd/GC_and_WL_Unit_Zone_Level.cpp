@@ -57,7 +57,7 @@ namespace SSD_Components
 		std::list<NVM::FlashMemory::Physical_Page_Address*>::iterator address;
 		for (address = block_list_in_a_zone.begin(); address != block_list_in_a_zone.end(); address++)
 		{
-			std::cout << (*address)->BlockID << std::endl;
+			//std::cout << (*address)->BlockID << std::endl;
 			PlaneBookKeepingType* pbke = block_manager->Get_plane_bookkeeping_entry(*(*address));	// Get a controller for the plane
 			Block_Pool_Slot_Type* block = &pbke->Blocks[(*address)->BlockID];
 

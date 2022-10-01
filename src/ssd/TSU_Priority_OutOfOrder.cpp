@@ -288,10 +288,10 @@ void TSU_Priority_OutOfOrder::Schedule()
                         service_erase_transaction(chip);
                     }
                 }
-                Round_robin_turn_of_channel[channelID] = (flash_chip_ID_type)(Round_robin_turn_of_channel[channelID] + 1) % chip_no_per_channel;
+                Round_robin_turn_of_channel[channelID] = (flash_chip_ID_type)(Round_robin_turn_of_channel[channelID] + 1) % chip_no_per_channel; //round robin to next chip 
                 if (_NVMController->Get_channel_status(chip->ChannelID) != BusChannelStatus::IDLE)
                 {
-                    break;
+                    break; // Transaction serviced on this channel. Break out loop.
                 }
             }
         }

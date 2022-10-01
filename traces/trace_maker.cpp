@@ -12,6 +12,12 @@ unsigned int smallest_zone_number = 2;
 unsigned int biggest_zone_number = 14;
 unsigned int total_size_of_accessed_file_in_GB = 1;
 unsigned int total_no_of_request = 10000;
+unsigned int read_write = 1;
+string arrival_time;
+string start_LBA;
+string device_number;
+string request_size_in_sector;
+string type_of_request;
 
 int main(int argc, char** argv) {
 
@@ -27,7 +33,11 @@ int main(int argc, char** argv) {
     cout << "please enter the whole file size to be accessed in GB : ";
     scanf("%u", &total_size_of_accessed_file_in_GB);
 
-    string outputfile = "sequential_write_" + to_string(request_size_in_KB)+ "KB_from_zone"  \
+    cout << "please enter 1 for read, 0 for write : ";
+    scanf("%u", &read_write);
+    type_of_request = read_write==1?"read":"write";   // 0 means that it's a write reqeust, read request is "1"
+
+    string outputfile = "sequential_"+type_of_request+"_" + to_string(request_size_in_KB)+ "KB_from_zone"  \
                         + to_string(smallest_zone_number) + "_" + to_string(total_size_of_accessed_file_in_GB) + "GB";
     cout << "output file name is " << outputfile << endl;
 
@@ -46,11 +56,6 @@ int main(int argc, char** argv) {
     // |---------512 byte-------||---------512 byte-------|
     // LBA :       1                         2
 
-    string arrival_time;
-    string start_LBA;
-    string device_number;
-    string request_size_in_sector;
-    string type_of_request;
 
     unsigned long long int prev_arrival_time = first_arrival_time;
     unsigned long long int prev_start_LBA = first_start_LBA;
@@ -59,7 +64,6 @@ int main(int argc, char** argv) {
         start_LBA = to_string(prev_start_LBA);
         device_number = "1";
         request_size_in_sector = to_string(request_size_in_KB * 2); // 2 == 1024 / sector_size_in_bytes
-        type_of_request = "0";   // 0 means that it's a write reqeust, read request is "1"
         
         trace_line = arrival_time + " " + device_number + " " + start_LBA + " " + request_size_in_sector + " " + type_of_request + "\n";
         
