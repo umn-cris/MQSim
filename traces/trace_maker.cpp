@@ -65,7 +65,7 @@ int main(int argc, char** argv) {
         device_number = "1";
         request_size_in_sector = to_string(request_size_in_KB * 2); // 2 == 1024 / sector_size_in_bytes
         
-        trace_line = arrival_time + " " + device_number + " " + start_LBA + " " + request_size_in_sector + " " + type_of_request + "\n";
+        trace_line = arrival_time + " " + device_number + " " + start_LBA + " " + request_size_in_sector + " " + to_string(read_write) + "\n";
         
         writeFile.write(trace_line.c_str(), trace_line.size());
         trace_line.clear();
