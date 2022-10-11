@@ -8,6 +8,7 @@ using namespace std;
 
 const unsigned int sector_size_in_bytes = 512;
 const unsigned int zone_size_MB = 256;
+unsigned int request_size_in_KB = 8;
 unsigned int smallest_zone_number = 2;
 unsigned int biggest_zone_number = 14;
 unsigned int total_size_of_accessed_file_in_GB = 1;
@@ -21,20 +22,17 @@ string type_of_request;
 
 int main(int argc, char** argv) {
 
-    cout << "This generates a sequential write requets." << endl;
+    if (argc != 5) {
+        cout << "This generates a sequential write requets." << endl;
+        cout << "Usage: ./trace_generator [request size in KB] [begin zone number] [total request size] [read(1)/write(0)]"<<endl;
+        return -1;
+    }
 
-    unsigned int request_size_in_KB = 8;
-    cout << "please enter the request size in KB : ";
-    scanf("%u", &request_size_in_KB);
+    request_size_in_KB = atoi(argv[1]);
+    smallest_zone_number = atoi(argv[2]);
+    total_size_of_accessed_file_in_GB = atoi(argv[3]);
+    read_write = atoi(argv[4]);
 
-    cout << "please enter the smallest zone number : ";
-    scanf("%u", &smallest_zone_number);
-
-    cout << "please enter the whole file size to be accessed in GB : ";
-    scanf("%u", &total_size_of_accessed_file_in_GB);
-
-    cout << "please enter 1 for read, 0 for write : ";
-    scanf("%u", &read_write);
     type_of_request = read_write==1?"read":"write";   // 0 means that it's a write reqeust, read request is "1"
 
     string outputfile = "sequential_"+type_of_request+"_" + to_string(request_size_in_KB)+ "KB_from_zone"  \
