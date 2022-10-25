@@ -1,5 +1,14 @@
 # MQSim: A Simulator for Modern NVMe and SATA SSDs
 
+## Directories (by Chai)
+
+.          Include build script `Makefile`, run script `run_tests.py`, and ssd config files
+src/       MQSim source files
+build/     MQSim build files
+workload/  ZNS-SSD workload definition
+traces/    ZNS-SSD generated synthetic traces, including sequential and random trace generators
+results/   ZNS-SSD experiment result xml files, result of `./MQSim -i <SSD config> -w <workload>`
+
 
 ## Usage in Linux
 Run following commands:

@@ -4,6 +4,14 @@
 
 c++ trace_maker.cpp -o trace_generator
 
+## run gen_trace.py
+
+run `py gen_trace.py` to create traces for the following feature combination:
+
+- request size 4k, 16k, 64k, 256k, 1M, 4M, 16M, 64M
+- start zone 1, (support 32 streams)
+- 
+
 ## trace format
 
 [request arrival time] [device number] [start LBA] [request size] [request type]
