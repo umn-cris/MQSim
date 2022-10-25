@@ -4,10 +4,10 @@
         <IO_Flow_Parameter_Set_Trace_Based>
 			<Priority_Class>HIGH</Priority_Class>
 			<Device_Level_Data_Caching_Mode>WRITE_CACHE</Device_Level_Data_Caching_Mode>
-			<Channel_IDs>0</Channel_IDs>
-			<Chip_IDs>0</Chip_IDs>
+			<Channel_IDs>0,1,2,3</Channel_IDs>
+			<Chip_IDs>0,1</Chip_IDs>
 			<Die_IDs>0,1</Die_IDs>
-			<Plane_IDs>0</Plane_IDs>
+			<Plane_IDs>0,1</Plane_IDs>
 			<Initial_Occupancy_Percentage>0</Initial_Occupancy_Percentage>
 			<File_Path>traces/trace_files/sequential_write_4KB_from_zone1_1GB</File_Path>
 			<Percentage_To_Be_Executed>100</Percentage_To_Be_Executed>
@@ -19,10 +19,10 @@
         <IO_Flow_Parameter_Set_Trace_Based>
 			<Priority_Class>HIGH</Priority_Class>
 			<Device_Level_Data_Caching_Mode>WRITE_CACHE</Device_Level_Data_Caching_Mode>
-			<Channel_IDs>0</Channel_IDs>
-			<Chip_IDs>0</Chip_IDs>
+			<Channel_IDs>0,1,2,3</Channel_IDs>
+			<Chip_IDs>0,1</Chip_IDs>
 			<Die_IDs>0,1</Die_IDs>
-			<Plane_IDs>0</Plane_IDs>
+			<Plane_IDs>0,1</Plane_IDs>
 			<Initial_Occupancy_Percentage>0</Initial_Occupancy_Percentage>
 			<File_Path>traces/trace_files/sequential_write_16KB_from_zone1_1GB</File_Path>
 			<Percentage_To_Be_Executed>100</Percentage_To_Be_Executed>
@@ -34,10 +34,10 @@
         <IO_Flow_Parameter_Set_Trace_Based>
 			<Priority_Class>HIGH</Priority_Class>
 			<Device_Level_Data_Caching_Mode>WRITE_CACHE</Device_Level_Data_Caching_Mode>
-			<Channel_IDs>0</Channel_IDs>
-			<Chip_IDs>0</Chip_IDs>
+			<Channel_IDs>0,1,2,3</Channel_IDs>
+			<Chip_IDs>0,1</Chip_IDs>
 			<Die_IDs>0,1</Die_IDs>
-			<Plane_IDs>0</Plane_IDs>
+			<Plane_IDs>0,1</Plane_IDs>
 			<Initial_Occupancy_Percentage>0</Initial_Occupancy_Percentage>
 			<File_Path>traces/trace_files/sequential_write_64KB_from_zone1_1GB</File_Path>
 			<Percentage_To_Be_Executed>100</Percentage_To_Be_Executed>
@@ -49,10 +49,10 @@
         <IO_Flow_Parameter_Set_Trace_Based>
 			<Priority_Class>HIGH</Priority_Class>
 			<Device_Level_Data_Caching_Mode>WRITE_CACHE</Device_Level_Data_Caching_Mode>
-			<Channel_IDs>0</Channel_IDs>
-			<Chip_IDs>0</Chip_IDs>
+			<Channel_IDs>0,1,2,3</Channel_IDs>
+			<Chip_IDs>0,1</Chip_IDs>
 			<Die_IDs>0,1</Die_IDs>
-			<Plane_IDs>0</Plane_IDs>
+			<Plane_IDs>0,1</Plane_IDs>
 			<Initial_Occupancy_Percentage>0</Initial_Occupancy_Percentage>
 			<File_Path>traces/trace_files/sequential_write_256KB_from_zone1_1GB</File_Path>
 			<Percentage_To_Be_Executed>100</Percentage_To_Be_Executed>
@@ -64,10 +64,10 @@
         <IO_Flow_Parameter_Set_Trace_Based>
 			<Priority_Class>HIGH</Priority_Class>
 			<Device_Level_Data_Caching_Mode>WRITE_CACHE</Device_Level_Data_Caching_Mode>
-			<Channel_IDs>0</Channel_IDs>
-			<Chip_IDs>0</Chip_IDs>
+			<Channel_IDs>0,1,2,3</Channel_IDs>
+			<Chip_IDs>0,1</Chip_IDs>
 			<Die_IDs>0,1</Die_IDs>
-			<Plane_IDs>0</Plane_IDs>
+			<Plane_IDs>0,1</Plane_IDs>
 			<Initial_Occupancy_Percentage>0</Initial_Occupancy_Percentage>
 			<File_Path>traces/trace_files/sequential_write_1024KB_from_zone1_1GB</File_Path>
 			<Percentage_To_Be_Executed>100</Percentage_To_Be_Executed>
@@ -79,10 +79,10 @@
         <IO_Flow_Parameter_Set_Trace_Based>
 			<Priority_Class>HIGH</Priority_Class>
 			<Device_Level_Data_Caching_Mode>WRITE_CACHE</Device_Level_Data_Caching_Mode>
-			<Channel_IDs>0</Channel_IDs>
-			<Chip_IDs>0</Chip_IDs>
+			<Channel_IDs>0,1,2,3</Channel_IDs>
+			<Chip_IDs>0,1</Chip_IDs>
 			<Die_IDs>0,1</Die_IDs>
-			<Plane_IDs>0</Plane_IDs>
+			<Plane_IDs>0,1</Plane_IDs>
 			<Initial_Occupancy_Percentage>0</Initial_Occupancy_Percentage>
 			<File_Path>traces/trace_files/sequential_write_4096KB_from_zone1_1GB</File_Path>
 			<Percentage_To_Be_Executed>100</Percentage_To_Be_Executed>
@@ -94,10 +94,10 @@
         <IO_Flow_Parameter_Set_Trace_Based>
 			<Priority_Class>HIGH</Priority_Class>
 			<Device_Level_Data_Caching_Mode>WRITE_CACHE</Device_Level_Data_Caching_Mode>
-			<Channel_IDs>0</Channel_IDs>
-			<Chip_IDs>0</Chip_IDs>
+			<Channel_IDs>0,1,2,3</Channel_IDs>
+			<Chip_IDs>0,1</Chip_IDs>
 			<Die_IDs>0,1</Die_IDs>
-			<Plane_IDs>0</Plane_IDs>
+			<Plane_IDs>0,1</Plane_IDs>
 			<Initial_Occupancy_Percentage>0</Initial_Occupancy_Percentage>
 			<File_Path>traces/trace_files/sequential_write_16384KB_from_zone1_1GB</File_Path>
 			<Percentage_To_Be_Executed>100</Percentage_To_Be_Executed>
@@ -109,10 +109,10 @@
         <IO_Flow_Parameter_Set_Trace_Based>
 			<Priority_Class>HIGH</Priority_Class>
 			<Device_Level_Data_Caching_Mode>WRITE_CACHE</Device_Level_Data_Caching_Mode>
-			<Channel_IDs>0</Channel_IDs>
-			<Chip_IDs>0</Chip_IDs>
+			<Channel_IDs>0,1,2,3</Channel_IDs>
+			<Chip_IDs>0,1</Chip_IDs>
 			<Die_IDs>0,1</Die_IDs>
-			<Plane_IDs>0</Plane_IDs>
+			<Plane_IDs>0,1</Plane_IDs>
 			<Initial_Occupancy_Percentage>0</Initial_Occupancy_Percentage>
 			<File_Path>traces/trace_files/sequential_write_65536KB_from_zone1_1GB</File_Path>
 			<Percentage_To_Be_Executed>100</Percentage_To_Be_Executed>

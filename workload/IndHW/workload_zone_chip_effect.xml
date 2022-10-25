@@ -9,7 +9,7 @@
 			<Die_IDs>0</Die_IDs>
 			<Plane_IDs>0</Plane_IDs>
 			<Initial_Occupancy_Percentage>0</Initial_Occupancy_Percentage>
-			<File_Path>traces/trace_files/sequential_write_4KB_from_zone1_4GB</File_Path>
+			<File_Path>traces/trace_files/sequential_write_4KB_from_zone1_1GB</File_Path>
 			<Percentage_To_Be_Executed>100</Percentage_To_Be_Executed>
 			<Relay_Count>1</Relay_Count>
 			<Time_Unit>NANOSECOND</Time_Unit>
@@ -24,7 +24,7 @@
 			<Die_IDs>0</Die_IDs>
 			<Plane_IDs>0</Plane_IDs>
 			<Initial_Occupancy_Percentage>0</Initial_Occupancy_Percentage>
-			<File_Path>traces/trace_files/sequential_write_16KB_from_zone1_4GB</File_Path>
+			<File_Path>traces/trace_files/sequential_write_16KB_from_zone1_1GB</File_Path>
 			<Percentage_To_Be_Executed>100</Percentage_To_Be_Executed>
 			<Relay_Count>1</Relay_Count>
 			<Time_Unit>NANOSECOND</Time_Unit>
@@ -39,7 +39,7 @@
 			<Die_IDs>0</Die_IDs>
 			<Plane_IDs>0</Plane_IDs>
 			<Initial_Occupancy_Percentage>0</Initial_Occupancy_Percentage>
-			<File_Path>traces/trace_files/sequential_write_64KB_from_zone1_4GB</File_Path>
+			<File_Path>traces/trace_files/sequential_write_64KB_from_zone1_1GB</File_Path>
 			<Percentage_To_Be_Executed>100</Percentage_To_Be_Executed>
 			<Relay_Count>1</Relay_Count>
 			<Time_Unit>NANOSECOND</Time_Unit>
@@ -54,7 +54,7 @@
 			<Die_IDs>0</Die_IDs>
 			<Plane_IDs>0</Plane_IDs>
 			<Initial_Occupancy_Percentage>0</Initial_Occupancy_Percentage>
-			<File_Path>traces/trace_files/sequential_write_256KB_from_zone1_4GB</File_Path>
+			<File_Path>traces/trace_files/sequential_write_256KB_from_zone1_1GB</File_Path>
 			<Percentage_To_Be_Executed>100</Percentage_To_Be_Executed>
 			<Relay_Count>1</Relay_Count>
 			<Time_Unit>NANOSECOND</Time_Unit>
@@ -69,7 +69,7 @@
 			<Die_IDs>0</Die_IDs>
 			<Plane_IDs>0</Plane_IDs>
 			<Initial_Occupancy_Percentage>0</Initial_Occupancy_Percentage>
-			<File_Path>traces/trace_files/sequential_write_1024KB_from_zone1_4GB</File_Path>
+			<File_Path>traces/trace_files/sequential_write_1024KB_from_zone1_1GB</File_Path>
 			<Percentage_To_Be_Executed>100</Percentage_To_Be_Executed>
 			<Relay_Count>1</Relay_Count>
 			<Time_Unit>NANOSECOND</Time_Unit>
@@ -84,7 +84,7 @@
 			<Die_IDs>0</Die_IDs>
 			<Plane_IDs>0</Plane_IDs>
 			<Initial_Occupancy_Percentage>0</Initial_Occupancy_Percentage>
-			<File_Path>traces/trace_files/sequential_write_4096KB_from_zone1_4GB</File_Path>
+			<File_Path>traces/trace_files/sequential_write_4096KB_from_zone1_1GB</File_Path>
 			<Percentage_To_Be_Executed>100</Percentage_To_Be_Executed>
 			<Relay_Count>1</Relay_Count>
 			<Time_Unit>NANOSECOND</Time_Unit>
@@ -99,7 +99,7 @@
 			<Die_IDs>0</Die_IDs>
 			<Plane_IDs>0</Plane_IDs>
 			<Initial_Occupancy_Percentage>0</Initial_Occupancy_Percentage>
-			<File_Path>traces/trace_files/sequential_write_16384KB_from_zone1_4GB</File_Path>
+			<File_Path>traces/trace_files/sequential_write_16384KB_from_zone1_1GB</File_Path>
 			<Percentage_To_Be_Executed>100</Percentage_To_Be_Executed>
 			<Relay_Count>1</Relay_Count>
 			<Time_Unit>NANOSECOND</Time_Unit>
@@ -114,7 +114,7 @@
 			<Die_IDs>0</Die_IDs>
 			<Plane_IDs>0</Plane_IDs>
 			<Initial_Occupancy_Percentage>0</Initial_Occupancy_Percentage>
-			<File_Path>traces/trace_files/sequential_write_65536KB_from_zone1_4GB</File_Path>
+			<File_Path>traces/trace_files/sequential_write_65536KB_from_zone1_1GB</File_Path>
 			<Percentage_To_Be_Executed>100</Percentage_To_Be_Executed>
 			<Relay_Count>1</Relay_Count>
 			<Time_Unit>NANOSECOND</Time_Unit>

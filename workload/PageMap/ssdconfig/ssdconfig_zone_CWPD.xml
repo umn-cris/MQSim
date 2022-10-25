@@ -28,7 +28,7 @@
 		<Ideal_Mapping_Table>false</Ideal_Mapping_Table>
 		<CMT_Capacity>2097152</CMT_Capacity>
 		<CMT_Sharing_Mode>SHARED</CMT_Sharing_Mode>
-		<Plane_Allocation_Scheme>CWDP</Plane_Allocation_Scheme>
+		<Plane_Allocation_Scheme>CWPD</Plane_Allocation_Scheme>
 		<Transaction_Scheduling_Policy>PRIORITY_OUT_OF_ORDER</Transaction_Scheduling_Policy>
 		<Overprovisioning_Ratio>0.07</Overprovisioning_Ratio>
 		<GC_Exec_Threshold>0.05000</GC_Exec_Threshold>
@@ -48,7 +48,7 @@
 		<Chip_No_Per_Channel>2</Chip_No_Per_Channel>
 		<Flash_Comm_Protocol>NVDDR2</Flash_Comm_Protocol>
 		<Flash_Parameter_Set>
-			<Flash_Technology>SLC</Flash_Technology>
+			<Flash_Technology>MLC</Flash_Technology>
 			<CMD_Suspension_Support>ERASE</CMD_Suspension_Support>
 			<Page_Read_Latency_LSB>75000</Page_Read_Latency_LSB>
 			<Page_Read_Latency_CSB>75000</Page_Read_Latency_CSB>

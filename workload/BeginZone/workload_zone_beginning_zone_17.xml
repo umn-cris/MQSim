@@ -15,7 +15,8 @@
 			<Time_Unit>NANOSECOND</Time_Unit>
 		</IO_Flow_Parameter_Set_Trace_Based>
     </IO_Scenario>
-	<IO_Flow_Parameter_Set_Trace_Based>
+	<IO_Scenario>
+		<IO_Flow_Parameter_Set_Trace_Based>
 			<Priority_Class>HIGH</Priority_Class>
 			<Device_Level_Data_Caching_Mode>WRITE_CACHE</Device_Level_Data_Caching_Mode>
 			<Channel_IDs>0,1,2,3</Channel_IDs>
@@ -44,7 +45,8 @@
 			<Time_Unit>NANOSECOND</Time_Unit>
 		</IO_Flow_Parameter_Set_Trace_Based>
     </IO_Scenario>
-	<IO_Flow_Parameter_Set_Trace_Based>
+	<IO_Scenario>
+		<IO_Flow_Parameter_Set_Trace_Based>
 			<Priority_Class>HIGH</Priority_Class>
 			<Device_Level_Data_Caching_Mode>WRITE_CACHE</Device_Level_Data_Caching_Mode>
 			<Channel_IDs>0,1,2,3</Channel_IDs>
@@ -58,7 +60,8 @@
 			<Time_Unit>NANOSECOND</Time_Unit>
 		</IO_Flow_Parameter_Set_Trace_Based>
     </IO_Scenario>
-	<IO_Flow_Parameter_Set_Trace_Based>
+	<IO_Scenario>
+		<IO_Flow_Parameter_Set_Trace_Based>
 			<Priority_Class>HIGH</Priority_Class>
 			<Device_Level_Data_Caching_Mode>WRITE_CACHE</Device_Level_Data_Caching_Mode>
 			<Channel_IDs>0,1,2,3</Channel_IDs>
@@ -87,7 +90,8 @@
 			<Time_Unit>NANOSECOND</Time_Unit>
 		</IO_Flow_Parameter_Set_Trace_Based>
     </IO_Scenario>
-	<IO_Flow_Parameter_Set_Trace_Based>
+	<IO_Scenario>
+		<IO_Flow_Parameter_Set_Trace_Based>
 			<Priority_Class>HIGH</Priority_Class>
 			<Device_Level_Data_Caching_Mode>WRITE_CACHE</Device_Level_Data_Caching_Mode>
 			<Channel_IDs>0,1,2,3</Channel_IDs>
