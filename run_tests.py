@@ -18,7 +18,6 @@ for suite in root.iter('Suite'):
     run = suite.attrib["run"].title() == 'True'
     if run:
         for test in suite.iter('Test'):
-            uid = test.find('UID').text
             ssdcfg = test.find('SSDConfig').text
             workload = test.find('Workload').text
             result_dir = "results/"+tag
@@ -31,7 +30,7 @@ for suite in root.iter('Suite'):
 
             result = result_dir+workload[index_of_nth(workload,"/",2 ):-4]+"_scenario_1"+workload[-4:]
 
-            print (uid, ssdcfg, workload, result)
+            print (ssdcfg, workload, result)
 
             cmd = os.getcwd()+"/MQSim -i "+ssdcfg+" -w "+workload
             os.system(cmd)
