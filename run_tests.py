@@ -20,7 +20,11 @@ for suite in root.iter('Suite'):
         for test in suite.iter('Test'):
             ssdcfg = test.find('SSDConfig').text
             workload = test.find('Workload').text
-            result_dir = "results/"+tag
+            desc = test.attrib['desc'].title()
+            if tag == "PageMap":
+                result_dir = "results/"+tag+"/"+desc
+            else:
+                result_dir = "results/"+tag
 
             # run individual tests spicified by suite "run" attribute
             # if run==false, but uid is specified as arg, run it
@@ -28,14 +32,13 @@ for suite in root.iter('Suite'):
             if not os.path.exists(result_dir):
                 os.makedirs(result_dir)
 
-            result = result_dir+workload[index_of_nth(workload,"/",2 ):-4]+"_scenario_1"+workload[-4:]
-
-            print (ssdcfg, workload, result)
+            # result = result_dir+workload[index_of_nth(workload,"/",2 ):-4]+"_scenario_1"+workload[-4:]
+            # print (ssdcfg, workload, result)
 
             cmd = os.getcwd()+"/MQSim -i "+ssdcfg+" -w "+workload
             os.system(cmd)
     
-        # move all scenario xml to result directory
-        os.chdir('workload/'+tag)
-        os.system('mv *_scenario* ../../'+result_dir)
-        os.chdir(cwd)
+            # move all scenario xml to result directory
+            os.chdir('workload/'+tag)
+            os.system('mv *_scenario* ../../'+result_dir)
+            os.chdir(cwd)

@@ -2,7 +2,7 @@ import os
 
 #req_size_in_kb = ["4", "16", "64", "256", "1024", "4096", "16384", "65536"]
 req_size_in_kb = ["4","8","16","32"]
-trace_size_in_GB = "4"
+trace_size_in_GB = "1"
 begin_zone = [1]
 #begin_zone = [16*i+1 for i in xrange(32)]
 type_of_request = "write"
