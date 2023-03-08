@@ -129,7 +129,7 @@ namespace SSD_Components
 			domains[domainID]->Chip_No_Per_Zone = ChipNoPerZone;
 			domains[domainID]->Die_No_Per_Zone = DieNoPerZone;
 			domains[domainID]->Plane_No_Per_Zone = PlaneNoPerZone;
-			std::cout << "CWPD=" << ChannelNoPerZone << ChipNoPerZone << DieNoPerZone << PlaneNoPerZone << std::endl;
+			std::cout << "CWDP=" << ChannelNoPerZone << ChipNoPerZone << DieNoPerZone << PlaneNoPerZone << std::endl;
 			std::cout << "'zone_size = " << fzm->zone_size << std::endl;
 		}
 		
