@@ -28,11 +28,17 @@ namespace SSD_Components
 	};
 	enum class Zone_Allocation_Scheme_Type
 	{
-		CDPW
+		CWDP, CWPD, CDWP, CDPW, CPWD, CPDW,
+		WCDP, WCPD, WDCP, WDPC, WPCD, WPDC,
+		DCWP, DCPW, DWCP, DWPC, DPCW, DPWC,
+		PCWD, PCDW, PWCD, PWDC, PDCW, PDWC
 	};
 	enum class SubZone_Allocation_Scheme_Type
 	{
-		CDPW
+		CWDP, CWPD, CDWP, CDPW, CPWD, CPDW,
+		WCDP, WCPD, WDCP, WDPC, WPCD, WPDC,
+		DCWP, DCPW, DWCP, DWPC, DPCW, DPWC,
+		PCWD, PCDW, PWCD, PWDC, PDCW, PDWC
 	};
 	enum class CMT_Sharing_Mode { SHARED, EQUAL_SIZE_PARTITIONING };
 

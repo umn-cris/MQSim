@@ -73,8 +73,8 @@
 			<Chip_No_Per_Zone>2</Chip_No_Per_Zone>
 			<Die_No_Per_Zone>2</Die_No_Per_Zone>
 			<Plane_No_Per_Zone>2</Plane_No_Per_Zone>
-			<Zone_Allocation_Scheme>CDPW</Zone_Allocation_Scheme>
-			<SubZone_Allocation_Scheme>CDPW</SubZone_Allocation_Scheme>
+			<Zone_Allocation_Scheme>WPCD</Zone_Allocation_Scheme>
+			<SubZone_Allocation_Scheme>WPCD</SubZone_Allocation_Scheme>
 		</Zone_Parameter_Set>
 	</Device_Parameter_Set>
 </Execution_Parameter_Set>

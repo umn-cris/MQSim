@@ -175,7 +175,7 @@ namespace SSD_Components
 			dummy_tr->Stream_id = stream_id;
 			for (MVPN_type translation_page_id = 0; translation_page_id < domains[stream_id]->Total_translation_pages_no; translation_page_id++) {
 				dummy_tr->LPA = (LPA_type)translation_page_id;
-				allocate_plane_for_translation_write(dummy_tr);
+ 				allocate_plane_for_translation_write(dummy_tr);
 				allocate_page_in_plane_for_translation_write(dummy_tr, (MVPN_type)dummy_tr->LPA, false);
 				flash_controller->Change_flash_page_status_for_preconditioning(dummy_tr->Address, dummy_tr->LPA);
 			}
@@ -726,14 +726,12 @@ namespace SSD_Components
 		}
 	}
 
-	void Address_Mapping_Unit_Zone_Level::allocate_plane_for_user_write(NVM_Transaction_Flash_WR* transaction)
+	void Address_Mapping_Unit_Zone_Level::allocate_plane_on_zone_allocation_scheme(LPA_type lpn, const stream_id_type stream_id, NVM::FlashMemory::Physical_Page_Address& address)
 	{
-		LPA_type lpn = transaction->LPA;
-		NVM::FlashMemory::Physical_Page_Address& targetAddress = transaction->Address;
-		AddressMappingDomain* domain = domains[transaction->Stream_id];
-
+		AddressMappingDomain* domain = domains[stream_id];
 		unsigned int zone_size_in_byte, block_size_in_byte, zone_p_level, total_level;
-		unsigned int zoneOffset, subzoneID, subzoneOffset, blockID, blockOffset, pageID;
+		unsigned int zoneOffset, subzoneID, subzoneOffset, blockID, blockOffset;
+		unsigned int index;
 
 		zone_size_in_byte = fzm->zone_size * 1024 * 1024;
 		block_size_in_byte = pages_no_per_block * page_size_in_byte;
@@ -741,70 +739,180 @@ namespace SSD_Components
 		// This zone_p_level is the same as the number of subzones per zone
 		total_level = domain->Channel_no * domain->Chip_no * domain->Die_no * domain->Plane_no;
 
-
 		//unsigned int subzone_no_per_zone 
 		unsigned int block_no_per_subzone = zone_size_in_byte / zone_p_level / block_size_in_byte;
 		unsigned int page_no_per_zone = zone_size_in_byte / page_size_in_byte;
 		
 		Zone_ID_type zoneID = lpn / page_no_per_zone; 
 		zoneOffset = lpn % page_no_per_zone;
-
-		unsigned int index;
+		if (domain->Channel_No_Per_Zone == 1 && 
+			domain->Chip_No_Per_Zone == 1 && 
+			domain->Die_No_Per_Zone == 1 && 
+			domain->Plane_No_Per_Zone == 1)
+		{ // 1*1*1*1 = minimum parallelism in one zone, zone_p_level is 1, we will use only one channel, one chip, one die, one plane. That means, one zone's subzone and blocks are contiguous in one plane.
+			index = zoneID;
+		} else { // any number of parallelism in one zone, zone_p_level is larger than 1, we will use multiple channels, chips, dies, planes. That means, one zone's subzone and blocks are not contiguous in one plane.
+			index = zoneOffset ;
+		}
 		switch (domain->ZoneAllocationScheme) {
+			case Zone_Allocation_Scheme_Type::CWDP:
+				address.ChannelID = domain->Channel_ids[(unsigned int)(index % channel_count)];
+				address.ChipID = domain->Chip_ids[(unsigned int)((index / channel_count) % chip_no_per_channel)];
+				address.DieID = domain->Die_ids[(unsigned int)((index / (chip_no_per_channel * channel_count)) % die_no_per_chip)];
+				address.PlaneID = domain->Plane_ids[(unsigned int)((index / (die_no_per_chip * chip_no_per_channel * channel_count)) % plane_no_per_die)];
+				break;
+			case Zone_Allocation_Scheme_Type::CWPD:
+				address.ChannelID = domain->Channel_ids[(unsigned int)(index % channel_count)];
+				address.ChipID = domain->Chip_ids[(unsigned int)((index / channel_count) % chip_no_per_channel)];
+				address.DieID = domain->Die_ids[(unsigned int)((index / (channel_count * chip_no_per_channel * plane_no_per_die)) % die_no_per_chip)];
+				address.PlaneID = domain->Plane_ids[(unsigned int)((index / (channel_count * chip_no_per_channel)) % plane_no_per_die)];
+				break;
+			case Zone_Allocation_Scheme_Type::CDWP:
+				address.ChannelID = domain->Channel_ids[(unsigned int)(index % channel_count)];
+				address.ChipID = domain->Chip_ids[(unsigned int)((index / (die_no_per_chip * channel_count)) % chip_no_per_channel)];
+				address.DieID = domain->Die_ids[(unsigned int)((index / channel_count) % die_no_per_chip)];
+				address.PlaneID = domain->Plane_ids[(unsigned int)((index / (die_no_per_chip * chip_no_per_channel * channel_count)) % plane_no_per_die)];
+				break;
 			case Zone_Allocation_Scheme_Type::CDPW:
-				if (domain->Channel_No_Per_Zone == channel_count && 
-					domain->Chip_No_Per_Zone == chip_no_per_channel && 
-					domain->Die_No_Per_Zone == die_no_per_chip && 
-					domain->Plane_No_Per_Zone == plane_no_per_die) { // maximum parallelism
-						// std::cout << "nysong - this is the maximum parallelism in one zone" << std::endl;
-						//blockID = zoneOffset / block_size_in_byte;
-						pageID = zoneOffset ;
-						
-						index = pageID;
-						targetAddress.ChannelID = domain->Channel_ids[(unsigned int)(index % channel_count)];
-						targetAddress.ChipID = domain->Chip_ids[(unsigned int)((index / (channel_count * die_no_per_chip * plane_no_per_die)) % chip_no_per_channel)];
-						targetAddress.DieID = domain->Die_ids[(unsigned int)(index / channel_count % die_no_per_chip)];
-						targetAddress.PlaneID = domain->Plane_ids[(unsigned int)(index / (channel_count*die_no_per_chip) % plane_no_per_die)];
-						// targetAddress.BlockID = (unsigned int)((zoneID * block_no_per_subzone) + ((pageID / total_level) / pages_no_per_block));
-						// targetAddress.PageID = (unsigned int)((pageID / total_level) % pages_no_per_block);
-						//targetAddress.BlockID = (unsigned int)((lpn / total_level) / pages_no_per_block);
-						//targetAddress.PageID = (unsigned int)((lpn / total_level) % pages_no_per_block);
-				} else if (	domain->Channel_No_Per_Zone > 1 || 
-							domain->Chip_No_Per_Zone > 1 ||
-							domain->Die_No_Per_Zone > 1 ||
-							domain->Plane_No_Per_Zone > 1 ) { // any parallelism between max and min by Chai
-						// std::cout << "chai -  CDPW("
-						// 		<< domain->Channel_No_Per_Zone
-						// 		<< domain->Die_No_Per_Zone
-						// 		<< domain->Plane_No_Per_Zone
-						// 		<< domain->Chip_No_Per_Zone
-						// 		<< ") parallelism in one zone" << std::endl;
-						pageID = zoneOffset ;
-						
-						index = pageID;
-						targetAddress.ChannelID = domain->Channel_ids[(unsigned int)(index % domain->Channel_No_Per_Zone)];
-						targetAddress.ChipID = domain->Chip_ids[(unsigned int)((index / (domain->Channel_No_Per_Zone * domain->Die_No_Per_Zone * domain->Plane_No_Per_Zone)) % domain->Chip_No_Per_Zone)];
-						targetAddress.DieID = domain->Die_ids[(unsigned int)(index / domain->Channel_No_Per_Zone % domain->Die_No_Per_Zone)];
-						targetAddress.PlaneID = domain->Plane_ids[(unsigned int)(index / (domain->Channel_No_Per_Zone*domain->Die_No_Per_Zone) % domain->Plane_No_Per_Zone)];
-				} else {	// 1*1*1*1 = minimum parallelism in one zone, zone_p_level is 1, we will use only one channel, one chip, one die, one plane. That means, one zone's subzone and blocks are contiguous in one plane. 
-					//std::cout << "nysong - This it the minimum parallelism in one zone" << std::endl;
-
-					blockID = zoneOffset / pages_no_per_block;
-					pageID = zoneOffset % pages_no_per_block;
-
-					index = zoneID;
-					targetAddress.ChannelID = domain->Channel_ids[(unsigned int)(index % channel_count)];
-					targetAddress.ChipID = domain->Chip_ids[(unsigned int)((index / (channel_count * die_no_per_chip * plane_no_per_die)) % chip_no_per_channel)];
-					targetAddress.DieID = domain->Die_ids[(unsigned int)(index / channel_count % die_no_per_chip)];
-					targetAddress.PlaneID = domain->Plane_ids[(unsigned int)(index / (channel_count*die_no_per_chip) % plane_no_per_die)]; 
-					//targetAddress.BlockID = (unsigned int)((zoneID / total_level) + blockID);
-					//targetAddress.BlockID = (unsigned int) blockID;
-					//targetAddress.PageID = pageID;
-				}
+				address.ChannelID = domain->Channel_ids[(unsigned int)(index % channel_count)];
+				address.ChipID = domain->Chip_ids[(unsigned int)((index / (plane_no_per_die * die_no_per_chip * channel_count)) % chip_no_per_channel)];
+				address.DieID = domain->Die_ids[(unsigned int)((index / channel_count) % die_no_per_chip)];
+				address.PlaneID = domain->Plane_ids[(unsigned int)((index / (die_no_per_chip * channel_count)) % plane_no_per_die)];
+				break;
+			case Zone_Allocation_Scheme_Type::CPWD:
+				address.ChannelID = domain->Channel_ids[(unsigned int)(index % channel_count)];
+				address.ChipID = domain->Chip_ids[(unsigned int)((index / (plane_no_per_die * channel_count)) % chip_no_per_channel)];
+				address.DieID = domain->Die_ids[(unsigned int)((index / (plane_no_per_die * chip_no_per_channel * channel_count)) % die_no_per_chip)];
+				address.PlaneID = domain->Plane_ids[(unsigned int)((index / channel_count) % plane_no_per_die)];
+				break;
+			case Zone_Allocation_Scheme_Type::CPDW:
+				address.ChannelID = domain->Channel_ids[(unsigned int)(index % channel_count)];
+				address.ChipID = domain->Chip_ids[(unsigned int)((index / (plane_no_per_die * die_no_per_chip * channel_count)) % chip_no_per_channel)];
+				address.DieID = domain->Die_ids[(unsigned int)((index / (plane_no_per_die * channel_count)) % die_no_per_chip)];
+				address.PlaneID = domain->Plane_ids[(unsigned int)((index / channel_count) % plane_no_per_die)];
+				break;
+				//Static: Way first
+			case Zone_Allocation_Scheme_Type::WCDP:
+				address.ChannelID = domain->Channel_ids[(unsigned int)((index / chip_no_per_channel) % channel_count)];
+				address.ChipID = domain->Chip_ids[(unsigned int)(index % chip_no_per_channel)];
+				address.DieID = domain->Die_ids[(unsigned int)((index / (chip_no_per_channel * channel_count)) % die_no_per_chip)];
+				address.PlaneID = domain->Plane_ids[(unsigned int)((index / (chip_no_per_channel * channel_count * die_no_per_chip)) % plane_no_per_die)];
+				break;
+			case Zone_Allocation_Scheme_Type::WCPD:
+				address.ChannelID = domain->Channel_ids[(unsigned int)((index / chip_no_per_channel) % channel_count)];
+				address.ChipID = domain->Chip_ids[(unsigned int)(index % chip_no_per_channel)];
+				address.DieID = domain->Die_ids[(unsigned int)((index / (chip_no_per_channel * channel_count * plane_no_per_die)) % die_no_per_chip)];
+				address.PlaneID = domain->Plane_ids[(unsigned int)((index / (chip_no_per_channel * channel_count)) % plane_no_per_die)];
+				break;
+			case Zone_Allocation_Scheme_Type::WDCP:
+				address.ChannelID = domain->Channel_ids[(unsigned int)((index / (chip_no_per_channel * die_no_per_chip)) % channel_count)];
+				address.ChipID = domain->Chip_ids[(unsigned int)(index % chip_no_per_channel)];
+				address.DieID = domain->Die_ids[(unsigned int)((index / chip_no_per_channel) % die_no_per_chip)];
+				address.PlaneID = domain->Plane_ids[(unsigned int)((index / (chip_no_per_channel * die_no_per_chip * channel_count)) % plane_no_per_die)];
+				break;
+			case Zone_Allocation_Scheme_Type::WDPC:
+				address.ChannelID = domain->Channel_ids[(unsigned int)((index / (chip_no_per_channel * die_no_per_chip * plane_no_per_die)) % channel_count)];
+				address.ChipID = domain->Chip_ids[(unsigned int)(index % chip_no_per_channel)];
+				address.DieID = domain->Die_ids[(unsigned int)((index / chip_no_per_channel) % die_no_per_chip)];
+				address.PlaneID = domain->Plane_ids[(unsigned int)((index / (chip_no_per_channel * die_no_per_chip)) % plane_no_per_die)];
+				break;
+			case Zone_Allocation_Scheme_Type::WPCD:
+				address.ChannelID = domain->Channel_ids[(unsigned int)((index / (chip_no_per_channel * plane_no_per_die)) % channel_count)];
+				address.ChipID = domain->Chip_ids[(unsigned int)(index % chip_no_per_channel)];
+				address.DieID = domain->Die_ids[(unsigned int)((index / (chip_no_per_channel * plane_no_per_die * channel_count)) % die_no_per_chip)];
+				address.PlaneID = domain->Plane_ids[(unsigned int)((index / chip_no_per_channel) % plane_no_per_die)];
+				break;
+			case Zone_Allocation_Scheme_Type::WPDC:
+				address.ChannelID = domain->Channel_ids[(unsigned int)((index / (chip_no_per_channel * plane_no_per_die * die_no_per_chip)) % channel_count)];
+				address.ChipID = domain->Chip_ids[(unsigned int)(index % chip_no_per_channel)];
+				address.DieID = domain->Die_ids[(unsigned int)((index / (chip_no_per_channel * plane_no_per_die)) % die_no_per_chip)];
+				address.PlaneID = domain->Plane_ids[(unsigned int)((index / chip_no_per_channel) % plane_no_per_die)];
+				break;
+				//Static: Die first
+			case Zone_Allocation_Scheme_Type::DCWP:
+				address.ChannelID = domain->Channel_ids[(unsigned int)((index / die_no_per_chip) % channel_count)];
+				address.ChipID = domain->Chip_ids[(unsigned int)((index / (die_no_per_chip * channel_count)) % chip_no_per_channel)];
+				address.DieID = domain->Die_ids[(unsigned int)(index % die_no_per_chip)];
+				address.PlaneID = domain->Plane_ids[(unsigned int)((index / (die_no_per_chip * channel_count * chip_no_per_channel)) % plane_no_per_die)];
+				break;
+			case Zone_Allocation_Scheme_Type::DCPW:
+				address.ChannelID = domain->Channel_ids[(unsigned int)((index / die_no_per_chip) % channel_count)];
+				address.ChipID = domain->Chip_ids[(unsigned int)((index / (die_no_per_chip * channel_count * plane_no_per_die)) % chip_no_per_channel)];
+				address.DieID = domain->Die_ids[(unsigned int)(index % die_no_per_chip)];
+				address.PlaneID = domain->Plane_ids[(unsigned int)((index / (die_no_per_chip * channel_count)) % plane_no_per_die)];
+				break;
+			case Zone_Allocation_Scheme_Type::DWCP:
+				address.ChannelID = domain->Channel_ids[(unsigned int)((index / (die_no_per_chip * chip_no_per_channel)) % channel_count)];
+				address.ChipID = domain->Chip_ids[(unsigned int)((index / die_no_per_chip) % chip_no_per_channel)];
+				address.DieID = domain->Die_ids[(unsigned int)(index % die_no_per_chip)];
+				address.PlaneID = domain->Plane_ids[(unsigned int)((index / (die_no_per_chip * chip_no_per_channel * channel_count)) % plane_no_per_die)];
+				break;
+			case Zone_Allocation_Scheme_Type::DWPC:
+				address.ChannelID = domain->Channel_ids[(unsigned int)((index / (die_no_per_chip * chip_no_per_channel * plane_no_per_die)) % channel_count)];
+				address.ChipID = domain->Chip_ids[(unsigned int)((index / die_no_per_chip) % chip_no_per_channel)];
+				address.DieID = domain->Die_ids[(unsigned int)(index % die_no_per_chip)];
+				address.PlaneID = domain->Plane_ids[(unsigned int)((index / (die_no_per_chip * chip_no_per_channel)) % plane_no_per_die)];
+				break;
+			case Zone_Allocation_Scheme_Type::DPCW:
+				address.ChannelID = domain->Channel_ids[(unsigned int)((index / (die_no_per_chip * plane_no_per_die)) % channel_count)];
+				address.ChipID = domain->Chip_ids[(unsigned int)((index / (die_no_per_chip * plane_no_per_die * channel_count)) % chip_no_per_channel)];
+				address.DieID = domain->Die_ids[(unsigned int)(index % die_no_per_chip)];
+				address.PlaneID = domain->Plane_ids[(unsigned int)((index / die_no_per_chip) % plane_no_per_die)];
+				break;
+			case Zone_Allocation_Scheme_Type::DPWC:
+				address.ChannelID = domain->Channel_ids[(unsigned int)((index / (die_no_per_chip * plane_no_per_die * chip_no_per_channel)) % channel_count)];
+				address.ChipID = domain->Chip_ids[(unsigned int)((index / (die_no_per_chip * plane_no_per_die)) % chip_no_per_channel)];
+				address.DieID = domain->Die_ids[(unsigned int)(index % die_no_per_chip)];
+				address.PlaneID = domain->Plane_ids[(unsigned int)((index / die_no_per_chip) % plane_no_per_die)];
+				break;
+				//Static: Plane first
+			case Zone_Allocation_Scheme_Type::PCWD:
+				address.ChannelID = domain->Channel_ids[(unsigned int)((index / plane_no_per_die) % channel_count)];
+				address.ChipID = domain->Chip_ids[(unsigned int)((index / (plane_no_per_die * channel_count)) % chip_no_per_channel)];
+				address.DieID = domain->Die_ids[(unsigned int)((index / (plane_no_per_die * channel_count * chip_no_per_channel)) % die_no_per_chip)];
+				address.PlaneID = domain->Plane_ids[(unsigned int)(index % plane_no_per_die)];
+				break;
+			case Zone_Allocation_Scheme_Type::PCDW:
+				address.ChannelID = domain->Channel_ids[(unsigned int)((index / plane_no_per_die) % channel_count)];
+				address.ChipID = domain->Chip_ids[(unsigned int)((index / (plane_no_per_die * channel_count * die_no_per_chip)) % chip_no_per_channel)];
+				address.DieID = domain->Die_ids[(unsigned int)((index / (plane_no_per_die * channel_count)) % die_no_per_chip)];
+				address.PlaneID = domain->Plane_ids[(unsigned int)(index % plane_no_per_die)];
+				break;
+			case Zone_Allocation_Scheme_Type::PWCD:
+				address.ChannelID = domain->Channel_ids[(unsigned int)((index / (plane_no_per_die * chip_no_per_channel)) % channel_count)];
+				address.ChipID = domain->Chip_ids[(unsigned int)((index / plane_no_per_die) % chip_no_per_channel)];
+				address.DieID = domain->Die_ids[(unsigned int)((index / (plane_no_per_die * chip_no_per_channel * channel_count)) % die_no_per_chip)];
+				address.PlaneID = domain->Plane_ids[(unsigned int)(index % plane_no_per_die)];
+				break;
+			case Zone_Allocation_Scheme_Type::PWDC:
+				address.ChannelID = domain->Channel_ids[(unsigned int)((index / (plane_no_per_die * chip_no_per_channel * die_no_per_chip)) % channel_count)];
+				address.ChipID = domain->Chip_ids[(unsigned int)((index / plane_no_per_die) % chip_no_per_channel)];
+				address.DieID = domain->Die_ids[(unsigned int)((index / (plane_no_per_die * chip_no_per_channel)) % die_no_per_chip)];
+				address.PlaneID = domain->Plane_ids[(unsigned int)(index % plane_no_per_die)];
+				break;
+			case Zone_Allocation_Scheme_Type::PDCW:
+				address.ChannelID = domain->Channel_ids[(unsigned int)((index / (plane_no_per_die * die_no_per_chip)) % channel_count)];
+				address.ChipID = domain->Chip_ids[(unsigned int)((index / (plane_no_per_die * die_no_per_chip * channel_count)) % chip_no_per_channel)];
+				address.DieID = domain->Die_ids[(unsigned int)((index / plane_no_per_die) % die_no_per_chip)];
+				address.PlaneID = domain->Plane_ids[(unsigned int)(index % plane_no_per_die)];
+				break;
+			case Zone_Allocation_Scheme_Type::PDWC:
+				address.ChannelID = domain->Channel_ids[(unsigned int)((index / (plane_no_per_die * die_no_per_chip * chip_no_per_channel)) % channel_count)];
+				address.ChipID = domain->Chip_ids[(unsigned int)((index / (plane_no_per_die * die_no_per_chip)) % chip_no_per_channel)];
+				address.DieID = domain->Die_ids[(unsigned int)((index / plane_no_per_die) % die_no_per_chip)];
+				address.PlaneID = domain->Plane_ids[(unsigned int)(index % plane_no_per_die)];
 				break;
 			default:
 				PRINT_ERROR("Unknown zone allocation scheme type!")
 		}
+	}
+
+	void Address_Mapping_Unit_Zone_Level::allocate_plane_for_user_write(NVM_Transaction_Flash_WR* transaction)
+	{
+		LPA_type lpn = transaction->LPA;
+		NVM::FlashMemory::Physical_Page_Address& targetAddress = transaction->Address;
+		AddressMappingDomain* domain = domains[transaction->Stream_id];
+		allocate_plane_on_zone_allocation_scheme(lpn, transaction->Stream_id, targetAddress);
 	}
 
 	void Address_Mapping_Unit_Zone_Level::allocate_page_in_plane_for_user_write(NVM_Transaction_Flash_WR* transaction, bool is_for_gc)
@@ -852,8 +960,7 @@ namespace SSD_Components
 		if (is_for_gc) {
 			block_manager->Allocate_block_and_page_in_plane_for_gc_write(transaction->Stream_id, transaction->Address);
 		} else {
-			//block_manager->Allocate_block_and_page_in_plane_for_user_write(transaction->Stream_id, transaction->Address);
-			block_manager->Allocate_block_and_page_in_plane_for_user_write_in_Zone(transaction->Stream_id, transaction->Address);
+			block_manager->Allocate_block_and_page_in_plane_for_user_write(transaction->Stream_id, transaction->Address);
 		}
 		transaction->PPA = Convert_address_to_ppa(transaction->Address);
 		domain->Update_mapping_info(ideal_mapping_table, transaction->Stream_id, transaction->LPA, transaction->PPA,
@@ -890,67 +997,9 @@ namespace SSD_Components
 	PPA_type Address_Mapping_Unit_Zone_Level::online_create_entry_for_reads(LPA_type lpa, const stream_id_type stream_id, NVM::FlashMemory::Physical_Page_Address& read_address, uint64_t read_sectors_bitmap)
 	{
 		AddressMappingDomain* domain = domains[stream_id];
+		allocate_plane_on_zone_allocation_scheme(lpa, stream_id, read_address);
 
-		unsigned int zone_size_in_byte, block_size_in_byte, zone_p_level, total_level;
-		unsigned int zoneOffset, subzoneID, subzoneOffset, blockID, blockOffset, pageID;
-
-		zone_size_in_byte = fzm->zone_size * 1024 * 1024;
-		block_size_in_byte = pages_no_per_block * page_size_in_byte;
-		zone_p_level = domain->Channel_No_Per_Zone * domain->Chip_No_Per_Zone * domain->Die_No_Per_Zone * domain->Plane_No_Per_Zone;
-		total_level = domain->Channel_no * domain->Chip_no * domain->Die_no * domain->Plane_no;
-
-		Zone_ID_type zoneID = lpa / zone_size_in_byte;
-		zoneOffset = lpa % zone_size_in_byte;
-
-		//unsigned int subzone_no_per_zone 
-		unsigned int block_no_per_subzone = zone_size_in_byte / zone_p_level / block_size_in_byte;
-
-		unsigned int index;	
-
-		switch (domain->ZoneAllocationScheme) {
-			case Zone_Allocation_Scheme_Type::CDPW:
-				if (domain->Channel_No_Per_Zone == channel_count && 
-					domain->Chip_No_Per_Zone == chip_no_per_channel && 
-					domain->Die_No_Per_Zone == die_no_per_chip && 
-					domain->Plane_No_Per_Zone == plane_no_per_die) { // maximum parallelism
-						//blockID = zoneOffset / block_size_in_byte;
-						pageID = zoneOffset / page_size_in_byte;
-						
-						index = pageID;
-						read_address.ChannelID = domain->Channel_ids[(unsigned int)(index % channel_count)];
-						read_address.ChipID = domain->Chip_ids[(unsigned int)((index / (channel_count * die_no_per_chip * plane_no_per_die)) % chip_no_per_channel)];
-						read_address.DieID = domain->Die_ids[(unsigned int)(index / channel_count % die_no_per_chip)];
-						read_address.PlaneID = domain->Plane_ids[(unsigned int)(index / (channel_count*die_no_per_chip) % plane_no_per_die)];
-				} else if (	domain->Channel_No_Per_Zone > 1 || 
-							domain->Chip_No_Per_Zone > 1 ||
-							domain->Die_No_Per_Zone > 1 ||
-							domain->Plane_No_Per_Zone > 1 ) { // any parallelism between max and min by Chai
-
-						pageID = zoneOffset ;
-						
-						index = pageID;
-						read_address.ChannelID = domain->Channel_ids[(unsigned int)(index % domain->Channel_No_Per_Zone)];
-						read_address.ChipID = domain->Chip_ids[(unsigned int)((index / (domain->Channel_No_Per_Zone * domain->Die_No_Per_Zone * domain->Plane_No_Per_Zone)) % domain->Chip_No_Per_Zone)];
-						read_address.DieID = domain->Die_ids[(unsigned int)(index / domain->Channel_No_Per_Zone % domain->Die_No_Per_Zone)];
-						read_address.PlaneID = domain->Plane_ids[(unsigned int)(index / (domain->Channel_No_Per_Zone*domain->Die_No_Per_Zone) % domain->Plane_No_Per_Zone)];
-				} else {	// 1*1*1*1 = minimum parallelism in one zone, zone_p_level is 1, we will use only one channel, one chip, one die, one plane. That means, one zone's subzone and blocks are contiguous in one plane. 
-					//blockID = zoneOffset / zone_size_in_byte;
-					// pageID = (zoneOffset % zone_size_in_byte) / page_size_in_byte;
-
-					index = zoneID;
-					read_address.ChannelID = domain->Channel_ids[(unsigned int)(index % channel_count)];
-					read_address.ChipID = domain->Chip_ids[(unsigned int)((index / (channel_count * die_no_per_chip * plane_no_per_die)) % chip_no_per_channel)];
-					read_address.DieID = domain->Die_ids[(unsigned int)(index / channel_count % die_no_per_chip)];
-					read_address.PlaneID = domain->Plane_ids[(unsigned int)(index / (channel_count*die_no_per_chip) % plane_no_per_die)]; 
-					// read_address.BlockID = (unsigned int)((zoneID / total_level) + blockID);
-					// read_address.PageID = pageID;
-				}
-				break;
-			default:
-				PRINT_ERROR("Unknown plane allocation scheme type!")
-		}
-
-		block_manager->Allocate_block_and_page_in_plane_for_user_write_in_Zone(stream_id, read_address);
+		block_manager->Allocate_block_and_page_in_plane_for_user_write(stream_id, read_address);
 		PPA_type ppa = Convert_address_to_ppa(read_address);
 		domain->Update_mapping_info(ideal_mapping_table, stream_id, lpa, ppa, read_sectors_bitmap);
 

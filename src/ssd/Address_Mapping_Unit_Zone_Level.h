@@ -83,6 +83,7 @@ namespace SSD_Components
 		unsigned int cmt_capacity;
 		unsigned int no_of_translation_entries_per_page;
 		std::set<NVM_Transaction_Flash_WR*>**** Write_transactions_for_overfull_planes;
+		void allocate_plane_on_zone_allocation_scheme(LPA_type lpa, const stream_id_type stream_id, NVM::FlashMemory::Physical_Page_Address& address);
 		void allocate_plane_for_user_write(NVM_Transaction_Flash_WR* transaction);
 		void allocate_page_in_plane_for_user_write(NVM_Transaction_Flash_WR* transaction, bool is_for_gc);
 		void allocate_plane_for_translation_write(NVM_Transaction_Flash* transaction);

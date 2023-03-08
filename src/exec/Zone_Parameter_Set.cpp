@@ -84,20 +84,110 @@ void Zone_Parameter_Set::XML_deserialize(rapidxml::xml_node<> *node)
 			 	std::transform(val.begin(), val.end(), val.begin(), ::toupper);
 			 	if (strcmp(val.c_str(), "CDPW") == 0) {
 			 		Zone_allocation_scheme = SSD_Components::Zone_Allocation_Scheme_Type::CDPW;
-			 	}
-				else {
-					PRINT_ERROR("Unknown command suspension type specified in the input file. For now, we only support 'CDPW' ")
+			 	} else if (strcmp(val.c_str(), "CDWP") == 0) {
+			 		Zone_allocation_scheme = SSD_Components::Zone_Allocation_Scheme_Type::CDWP;
+				} else if (strcmp(val.c_str(), "CPDW") == 0) {
+			 		Zone_allocation_scheme = SSD_Components::Zone_Allocation_Scheme_Type::CPDW;
+				} else if (strcmp(val.c_str(), "CPWD") == 0) {
+			 		Zone_allocation_scheme = SSD_Components::Zone_Allocation_Scheme_Type::CPWD;
+				} else if (strcmp(val.c_str(), "CWDP") == 0) {
+			 		Zone_allocation_scheme = SSD_Components::Zone_Allocation_Scheme_Type::CWDP;
+				} else if (strcmp(val.c_str(), "CWPD") == 0) {
+			 		Zone_allocation_scheme = SSD_Components::Zone_Allocation_Scheme_Type::CWPD;
+			 	} else if (strcmp(val.c_str(), "DCPW") == 0) {
+			 		Zone_allocation_scheme = SSD_Components::Zone_Allocation_Scheme_Type::DCPW;
+				} else if (strcmp(val.c_str(), "DCWP") == 0) {
+			 		Zone_allocation_scheme = SSD_Components::Zone_Allocation_Scheme_Type::DCWP;
+			 	} else if (strcmp(val.c_str(), "DPCW") == 0) {
+			 		Zone_allocation_scheme = SSD_Components::Zone_Allocation_Scheme_Type::DPCW;
+				} else if (strcmp(val.c_str(), "DPWC") == 0) {
+			 		Zone_allocation_scheme = SSD_Components::Zone_Allocation_Scheme_Type::DPWC;
+				} else if (strcmp(val.c_str(), "DWCP") == 0) {
+			 		Zone_allocation_scheme = SSD_Components::Zone_Allocation_Scheme_Type::DWCP;
+				} else if (strcmp(val.c_str(), "DWPC") == 0) {
+			 		Zone_allocation_scheme = SSD_Components::Zone_Allocation_Scheme_Type::DWPC;
+			 	} else if (strcmp(val.c_str(), "PCDW") == 0) {
+			 		Zone_allocation_scheme = SSD_Components::Zone_Allocation_Scheme_Type::PCDW;
+				} else if (strcmp(val.c_str(), "PCWD") == 0) {
+					Zone_allocation_scheme = SSD_Components::Zone_Allocation_Scheme_Type::PCWD;
+				} else if (strcmp(val.c_str(), "PDCW") == 0) {
+			 		Zone_allocation_scheme = SSD_Components::Zone_Allocation_Scheme_Type::PDCW;
+				} else if (strcmp(val.c_str(), "PDWC") == 0) {
+			 		Zone_allocation_scheme = SSD_Components::Zone_Allocation_Scheme_Type::PDWC;
+				} else if (strcmp(val.c_str(), "PWCD") == 0) {
+			 		Zone_allocation_scheme = SSD_Components::Zone_Allocation_Scheme_Type::PWCD;
+				} else if (strcmp(val.c_str(), "PWDC") == 0) {
+			 		Zone_allocation_scheme = SSD_Components::Zone_Allocation_Scheme_Type::PWDC;
+			 	} else if (strcmp(val.c_str(), "WCDP") == 0) {
+			 		Zone_allocation_scheme = SSD_Components::Zone_Allocation_Scheme_Type::WCDP;
+				} else if (strcmp(val.c_str(), "WCPD") == 0) {
+			 		Zone_allocation_scheme = SSD_Components::Zone_Allocation_Scheme_Type::WCPD;
+				} else if (strcmp(val.c_str(), "WDCP") == 0) {
+			 		Zone_allocation_scheme = SSD_Components::Zone_Allocation_Scheme_Type::WDCP;
+				} else if (strcmp(val.c_str(), "WDPC") == 0) {
+			 		Zone_allocation_scheme = SSD_Components::Zone_Allocation_Scheme_Type::WDPC;
+				} else if (strcmp(val.c_str(), "WPCD") == 0) {
+			 		Zone_allocation_scheme = SSD_Components::Zone_Allocation_Scheme_Type::WPCD;
+				} else if (strcmp(val.c_str(), "WPDC") == 0) {
+			 		Zone_allocation_scheme = SSD_Components::Zone_Allocation_Scheme_Type::WPDC;
+				} else {
+					PRINT_ERROR("Unknown Zone_Allocation_Scheme type specified in the input file.")
 				}
 			 } else if (strcmp(param->name(), "SubZone_Allocation_Scheme") == 0) {
 			 	std::string val = param->value();
 			 	std::transform(val.begin(), val.end(), val.begin(), ::toupper);
 			 	if (strcmp(val.c_str(), "CDPW") == 0) {
 					 SubZone_allocation_scheme = SSD_Components::SubZone_Allocation_Scheme_Type::CDPW;
-			 	} 
-				else {
-			 		PRINT_ERROR("Unknown command suspension type specified in the input file")
-			 	}
-			}
+			 	} else if (strcmp(val.c_str(), "CDWP") == 0) {
+			 		SubZone_allocation_scheme = SSD_Components::SubZone_Allocation_Scheme_Type::CDWP;
+				} else if (strcmp(val.c_str(), "CPDW") == 0) {
+			 		SubZone_allocation_scheme = SSD_Components::SubZone_Allocation_Scheme_Type::CPDW;
+				} else if (strcmp(val.c_str(), "CPWD") == 0) {
+			 		SubZone_allocation_scheme = SSD_Components::SubZone_Allocation_Scheme_Type::CPWD;
+				} else if (strcmp(val.c_str(), "CWDP") == 0) {
+			 		SubZone_allocation_scheme = SSD_Components::SubZone_Allocation_Scheme_Type::CWDP;
+				} else if (strcmp(val.c_str(), "CWPD") == 0) {
+			 		SubZone_allocation_scheme = SSD_Components::SubZone_Allocation_Scheme_Type::CWPD;
+			 	} else if (strcmp(val.c_str(), "DCPW") == 0) {
+			 		SubZone_allocation_scheme = SSD_Components::SubZone_Allocation_Scheme_Type::DCPW;
+				} else if (strcmp(val.c_str(), "DCWP") == 0) {
+			 		SubZone_allocation_scheme = SSD_Components::SubZone_Allocation_Scheme_Type::DCWP;
+			 	} else if (strcmp(val.c_str(), "DPCW") == 0) {
+			 		SubZone_allocation_scheme = SSD_Components::SubZone_Allocation_Scheme_Type::DPCW;
+				} else if (strcmp(val.c_str(), "DPWC") == 0) {
+			 		SubZone_allocation_scheme = SSD_Components::SubZone_Allocation_Scheme_Type::DPWC;
+				} else if (strcmp(val.c_str(), "DWCP") == 0) {
+			 		SubZone_allocation_scheme = SSD_Components::SubZone_Allocation_Scheme_Type::DWCP;
+				} else if (strcmp(val.c_str(), "DWPC") == 0) {
+			 		SubZone_allocation_scheme = SSD_Components::SubZone_Allocation_Scheme_Type::DWPC;
+			 	} else if (strcmp(val.c_str(), "PCDW") == 0) {
+			 		SubZone_allocation_scheme = SSD_Components::SubZone_Allocation_Scheme_Type::PCDW;
+				} else if (strcmp(val.c_str(), "PCWD") == 0) {
+					SubZone_allocation_scheme = SSD_Components::SubZone_Allocation_Scheme_Type::PCWD;
+				} else if (strcmp(val.c_str(), "PDCW") == 0) {
+			 		SubZone_allocation_scheme = SSD_Components::SubZone_Allocation_Scheme_Type::PDCW;
+				} else if (strcmp(val.c_str(), "PDWC") == 0) {
+			 		SubZone_allocation_scheme = SSD_Components::SubZone_Allocation_Scheme_Type::PDWC;
+				} else if (strcmp(val.c_str(), "PWCD") == 0) {
+			 		SubZone_allocation_scheme = SSD_Components::SubZone_Allocation_Scheme_Type::PWCD;
+				} else if (strcmp(val.c_str(), "PWDC") == 0) {
+			 		SubZone_allocation_scheme = SSD_Components::SubZone_Allocation_Scheme_Type::PWDC;
+			 	} else if (strcmp(val.c_str(), "WCDP") == 0) {
+			 		SubZone_allocation_scheme = SSD_Components::SubZone_Allocation_Scheme_Type::WCDP;
+				} else if (strcmp(val.c_str(), "WCPD") == 0) {
+			 		SubZone_allocation_scheme = SSD_Components::SubZone_Allocation_Scheme_Type::WCPD;
+				} else if (strcmp(val.c_str(), "WDCP") == 0) {
+			 		SubZone_allocation_scheme = SSD_Components::SubZone_Allocation_Scheme_Type::WDCP;
+				} else if (strcmp(val.c_str(), "WDPC") == 0) {
+			 		SubZone_allocation_scheme = SSD_Components::SubZone_Allocation_Scheme_Type::WDPC;
+				} else if (strcmp(val.c_str(), "WPCD") == 0) {
+			 		SubZone_allocation_scheme = SSD_Components::SubZone_Allocation_Scheme_Type::WPCD;
+				} else if (strcmp(val.c_str(), "WPDC") == 0) {
+			 		SubZone_allocation_scheme = SSD_Components::SubZone_Allocation_Scheme_Type::WPDC;
+				} else {
+					PRINT_ERROR("Unknown SubZone_Allocation_Scheme specified in the input file")
+				}
+			 }
 		}
 	} catch (...) {
 		PRINT_ERROR("Error in the Flash_Parameter_Set!")
