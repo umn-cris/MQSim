@@ -20,7 +20,7 @@ for suite in root.iter('Suite'):
         for test in suite.iter('Test'):
             ssdcfg = test.find('SSDConfig').text
             workload = test.find('Workload').text
-            desc = test.attrib['desc'].title()
+            desc = test.attrib['desc'].title().capitalize()
             if tag == "PageMap":
                 result_dir = "results/"+tag+"/"+desc
             else:
@@ -42,3 +42,8 @@ for suite in root.iter('Suite'):
             os.chdir('workload/'+tag)
             os.system('mv *_scenario* ../../'+result_dir)
             os.chdir(cwd)
+
+        # Create a json file for each suite, `parse_result.py` will parse each Test in the Suite (e.g. CDWP, CDPW ... in PageMap)
+        # and produce a joint json file for each suite, named after the suite tag (e.g. results/PageMap/PageMap.json)
+        
+        os.system('python3 parse_result.py '+tag)

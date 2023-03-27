@@ -45,7 +45,7 @@ namespace SSD_Components
 		if (this->GC_and_WL_Unit == NULL)
 			throw std::logic_error("The garbage collector is not set for FTL!");
 		if (this->ZoneManager == NULL && SupportZone == true)	// for ZNS
-			throw std::logic_error("The zone namanger is not set fot FTL");
+			throw std::logic_error("The zone manager is not set for FTL");
 	}
 	void FTL::Perform_precondition(std::vector<Utils::Workload_Statistics*> workload_stats)
 	{
@@ -435,7 +435,7 @@ namespace SSD_Components
 			//Note: if hot/cold separation is required, then the following estimations should be changed according to Van Houtd's paper in Performance Evaluation 2014.
 			std::vector<double> steadystate_block_status_probability;//The probability distribution function of the number of valid pages in a block in the steadystate
 			double rho = stat->Initial_occupancy_ratio * (1 - over_provisioning_ratio) / (1 - double(GC_and_WL_Unit->Get_minimum_number_of_free_pages_before_GC()) / block_no_per_plane);
-			switch (decision_dist_type) {
+			switch (stat->Address_distribution_type) {
 			case Utils::Address_Distribution_Type::RANDOM_HOTCOLD://Estimate the steady-state of the hot/cold traffic based on the steady-state of the uniform traffic
 			{
 				double r_to_f_ratio = std::sqrt(double(stat->Ratio_of_traffic_accessing_hot_region) / double(stat->Ratio_of_hot_addresses_to_whole_working_set));

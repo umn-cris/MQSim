@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/MQSim",
-            "args": ["-i","workload/PageMap/ssdconfig/ssdconfig_zone_CDPW.xml","-w","workload/PageMap/workload_zone_max.xml"],
+            "args": ["-i","workload/PageMap/ssdconfig/ssdconfig_zone_CWDP.xml","-w","workload/PageMap/workload_zone_max.xml"],
             //"args": ["-i","ssdconfig_zone.xml","-w","workload/PageMap/workload_zone_max.xml"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
