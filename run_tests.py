@@ -45,5 +45,7 @@ for suite in root.iter('Suite'):
 
         # Create a json file for each suite, `parse_result.py` will parse each Test in the Suite (e.g. CDWP, CDPW ... in PageMap)
         # and produce a joint json file for each suite, named after the suite tag (e.g. results/PageMap/PageMap.json)
-        
-        os.system('python3 parse_result.py '+tag)
+        # run parse_result.py will create for '' PageMap, and '' for others
+        os.system('python3 parse_result.py '+tag+' '+desc)
+        # add workload name to result json file
+        os.rename('results/'+tag+'/'+tag+'.json', 'results/'+tag+'/'+tag+'_'+workload[index_of_nth(workload,"/",2 ):-4]+'.json')
