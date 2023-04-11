@@ -5,11 +5,25 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "args": ["PageMap"],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/MQSim",
-            "args": ["-i","workload/PageMap/ssdconfig/ssdconfig_zone_CWDP.xml","-w","workload/PageMap/workload_zone_max.xml"],
+            "args": [
+                "-i",
+                "workload/PageMap/ssdconfig/ssdconfig_zone_CWDP.xml",
+                "-w",
+                "workload/PageMap/workload_zone_max.xml"
+            ],
             //"args": ["-i","ssdconfig_zone.xml","-w","workload/PageMap/workload_zone_max.xml"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -17,10 +31,16 @@
             "externalConsole": false,
             "MIMode": "gdb",
             "setupCommands": [
-
-                { "text": "-enable-pretty-printing", "description": "enable pretty printing", "ignoreFailures": true },
-
-                { "text": "handle SIGPIPE nostop noprint pass", "description": "ignore SIGPIPE", "ignoreFailures": true }  
+                {
+                    "text": "-enable-pretty-printing",
+                    "description": "enable pretty printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "text": "handle SIGPIPE nostop noprint pass",
+                    "description": "ignore SIGPIPE",
+                    "ignoreFailures": true
+                }
             ]
         }
     ]
