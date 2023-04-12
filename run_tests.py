@@ -29,7 +29,7 @@ def main():
                 workload = test.find('Workload').text
                 test_tags = gather_tags(test)
 
-                if suite_name == "PageMap":
+                if "PageMap" in suite_name:
                     result_dir = "results/"+suite_name+"/"+test_tags['desc']
                 else:
                     result_dir = "results/"+suite_name
@@ -37,20 +37,17 @@ def main():
                 # run individual tests spicified by suite "run" attribute
                 # if run==false, but uid is specified as arg, run it
                 
-                if not os.path.exists(result_dir):
-                    os.makedirs(result_dir)
+                # if not os.path.exists(result_dir):
+                #     os.makedirs(result_dir)
 
-                cmd = os.getcwd()+"/MQSim -i "+ssdcfg+" -w "+workload
-                os.system(cmd)
+                # cmd = os.getcwd()+"/MQSim -i "+ssdcfg+" -w "+workload
+                # os.system(cmd)
         
-                # move all scenario xml to result directory
-                os.chdir('workload/'+suite_name)
-                os.system('mv *_scenario* ../../'+result_dir)
-                os.chdir(cwd)
+                # # move all scenario xml to result directory
+                # os.chdir('workload/'+suite_name)
+                # os.system('mv *_scenario* ../../'+result_dir)
+                # os.chdir(cwd)
 
-                # Create a json file for each suite, `parse_result.py` will parse each Test in the Suite (e.g. CDWP, CDPW ... in PageMap)
-                # and produce a joint json file for each suite, named after the suite tag (e.g. results/PageMap/PageMap.json)
-                # run parse_result.py will create for '' PageMap, and '' for others
                 pr.parse(suite_name, test_tags)
             pr.parse_flush(suite_name)
 

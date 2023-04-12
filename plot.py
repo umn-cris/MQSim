@@ -20,31 +20,34 @@ def select_y_array(tests, y_key):
     """Return a list of y values"""
     return [test[y_key] for test in tests]
 
-def plot_avg_queue_length(tests, title) -> plt:
-    x_50us = select_from_tag(tests, 'desc')
-    y_avg_queue = select_y_array(tests, 'Average Avg_Queue_Length')
+def plot_y_key(tests, y_key, title) -> plt:
+    x = select_from_tag(tests, 'desc')
+    y = select_y_array(tests, y_key)
 
     fig, ax = plt.subplots()
-    ax.bar(x_50us, y_avg_queue)
+    ax.bar(x, y)
     ax.set_title(title)
 
     plt.xticks(rotation='vertical')
     plt.xlabel('Page mapping scheme')
-    plt.ylabel('Avg_Queue_Length')
+    plt.ylabel(y_key)
 
     tags = tests[0]['tags']
-    ax.set_ylim([52.0, 52.7])
-    plt.text(25, 52.5, 'request_size:'+tags['request_size']+'\nworkload:'+tags['workload_type']+'\n               '+tags['workload_type2']+'\nwrite%:'+tags['write_percent']+'\nzone_size:'+tags['zone_size'])
+    diff = (max(y)-min(y))/10
+    ax.set_ylim(bottom=min(y)-diff, top=max(y)+diff)
+    plt.text(len(x)+1, max(y)-diff, 'request_size:'+tags['request_size']+'\nworkload:'+tags['workload_type']+'\n               '+tags['workload_type2']+'\nwrite%:'+tags['write_percent']+'\nzone_size:'+tags['zone_size'])
     
-    for i, value in enumerate(y_avg_queue):
-        plt.text(x_50us[i], y_avg_queue[i], str(value), horizontalalignment='center', verticalalignment='bottom')
+    for i, value in enumerate(y):
+        plt.text(x[i], y[i], str(value), horizontalalignment='center', verticalalignment='bottom')
 
     return plt
 
 if __name__ == "__main__":
     result = read_json("results/result.json")
-    pm = [suite['tests'] for suite in result if suite['suite'] == "PageMap"][0]
+    pm = [suite['tests'] for suite in result if suite['suite'] == "PageMapIntensity"][0]
     tests_50us = select_tests_by_intensity(pm,"50us")
-    plt = plot_avg_queue_length(tests_50us, '[PageMap] Average Queue Length for 50us intensity')
-
-    plt.show()
+    plot_y_key(tests_50us, 'Average Avg_Queue_Length', '[PageMap] Average Queue Length for 50us intensity').show()
+    plot_y_key(tests_50us, 'Device_Response_Time', '[PageMap] Device Response Time for 50us intensity').show()
+    tests_52us = select_tests_by_intensity(pm,"60us")
+    plot_y_key(tests_52us, 'Average Avg_Queue_Length', '[PageMap] Average Queue Length for 60us intensity').show()
+    plot_y_key(tests_52us, 'Device_Response_Time', '[PageMap] Device Response Time for 50us intensity').show()

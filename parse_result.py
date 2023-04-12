@@ -1,14 +1,3 @@
-# Usage: python3 parse_result.py <suite_tag>
-# Example: python3 parse_result.py PageMap
-#   Create a json file for each suite, `parse_result.py` will parse each Test in the Suite (e.g. CDWP, CDPW ... in PageMap)
-#   and produce a joint json file for each suite, named after the suite tag (e.g. PageMap.json)
-# JSON structure:
-#  {
-#     "tag": "PageMap",
-#     "tests": [{"desc": "CDWP", "bandwidth": 0.0, "iops": 0.0, "Device_Response_Time": "0.0", "interleave_program_cmd": "0", "multiplane_program_cmd": "0", "copy_program_cmd": "0", "Average Avg_Queue_Length": 0.0, "Average STDev_Queue_Length": 0.0},
-#               {"desc": "CDPW", "bandwidth": 0.0, "iops": 0.0, "Device_Response_Time": "0.0", "interleave_program_cmd": "0", "multiplane_program_cmd": "0", "copy_program_cmd": "0", "Average Avg_Queue_Length": 0.0, "Average STDev_Queue_Length": 0.0},
-#               {"desc": "PDWC", "bandwidth": 0.0, "iops": 0.0, "Device_Response_Time": "0.0", "interleave_program_cmd": "0", "multiplane_program_cmd": "0", "copy_program_cmd": "0", "Average Avg_Queue_Length": 0.0, "Average STDev_Queue_Length": 0.0}]
-#  }
 import json
 import os
 import xml.etree.ElementTree as ET
@@ -20,7 +9,7 @@ def parse_init(suite):
 
 def parse(suite, tags = {}):
     # loop through all XML files in the folder, this only applies to PageMap suite
-    if suite == "PageMap":
+    if "PageMap" in suite:
         result_dir = "results/"+suite+"/"+tags['desc']
     else:
         result_dir = "results/"+suite
@@ -33,14 +22,14 @@ def parse(suite, tags = {}):
             root = ET.parse(file_path).getroot()
             bandwidth = float(root.find(".//Bandwidth").text)
             iops = float(root.find(".//IOPS").text)
-            Device_Response_Time = root.find(".//Device_Response_Time").text
+            Device_Response_Time = float(root.find(".//Device_Response_Time").text)
             # round them to 2 decimal places
             bandwidth = round(bandwidth, 2)
             iops = round(iops, 2)
             
-            interleave_program_cmd = root.find('.//SSDDevice.FTL').attrib['Issued_Flash_Interleaved_Program_CMD']
-            multiplane_program_cmd = root.find('.//SSDDevice.FTL').attrib['Issued_Flash_Multiplane_Program_CMD']
-            copy_program_cmd = root.find('.//SSDDevice.FTL').attrib['Issued_Flash_Copyback_Program_CMD']
+            interleave_program_cmd = float(root.find('.//SSDDevice.FTL').attrib['Issued_Flash_Interleaved_Program_CMD'])
+            multiplane_program_cmd = float(root.find('.//SSDDevice.FTL').attrib['Issued_Flash_Multiplane_Program_CMD'])
+            copy_program_cmd = float(root.find('.//SSDDevice.FTL').attrib['Issued_Flash_Copyback_Program_CMD'])
 
             # Define the XPath query
             xpath_query = './/SSDDevice.TSU.User_Write_TR_Queue.Priority.HIGH'
@@ -81,7 +70,7 @@ def parse_flush(suite):
     global suite_dict
     if suite_dict != None:
         if index_to_replace != -1:
-            if suite == "PageMap":
+            if "PageMap" in suite:
                 existing_data[index_to_replace]['tests'].extend(suite_dict['tests'])
             existing_data[index_to_replace] = suite_dict
         else:
