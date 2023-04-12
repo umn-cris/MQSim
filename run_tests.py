@@ -5,7 +5,7 @@
 
 import os
 import xml.etree.ElementTree as ET
-from parse_result import parse
+import parse_result as pr
 
 tree = ET.parse('run_tests.config')
 root = tree.getroot()
@@ -20,18 +20,19 @@ def index_of_nth(text, substring, n):
 
 def main():
     for suite in root.iter('Suite'):
-        tag = suite.attrib["tag"]
+        suite_name = suite.attrib["name"]
         run = suite.attrib["run"].title() == 'True'
         if run:
+            pr.parse_init(suite_name)
             for test in suite.iter('Test'):
                 ssdcfg = test.find('SSDConfig').text
                 workload = test.find('Workload').text
                 test_tags = gather_tags(test)
 
-                if tag == "PageMap":
-                    result_dir = "results/"+tag+"/"+test_tags['desc']
+                if suite_name == "PageMap":
+                    result_dir = "results/"+suite_name+"/"+test_tags['desc']
                 else:
-                    result_dir = "results/"+tag
+                    result_dir = "results/"+suite_name
 
                 # run individual tests spicified by suite "run" attribute
                 # if run==false, but uid is specified as arg, run it
@@ -39,18 +40,19 @@ def main():
                 if not os.path.exists(result_dir):
                     os.makedirs(result_dir)
 
-                cmd = os.getcwd()+"/MQSim -i "+ssdcfg+" -w "+workload
-                os.system(cmd)
+                # cmd = os.getcwd()+"/MQSim -i "+ssdcfg+" -w "+workload
+                # os.system(cmd)
         
                 # move all scenario xml to result directory
-                os.chdir('workload/'+tag)
-                os.system('mv *_scenario* ../../'+result_dir)
-                os.chdir(cwd)
+                # os.chdir('workload/'+tag)
+                # os.system('mv *_scenario* ../../'+result_dir)
+                # os.chdir(cwd)
 
                 # Create a json file for each suite, `parse_result.py` will parse each Test in the Suite (e.g. CDWP, CDPW ... in PageMap)
                 # and produce a joint json file for each suite, named after the suite tag (e.g. results/PageMap/PageMap.json)
                 # run parse_result.py will create for '' PageMap, and '' for others
-                parse(tag, test_tags)
+                pr.parse(suite_name, test_tags)
+            pr.parse_flush(suite_name)
 
 
 
