@@ -1,6 +1,7 @@
 MQSim
 build/
 results/
+graphs/
 traces/trace_files
 # vscode
 *.code-workspace
