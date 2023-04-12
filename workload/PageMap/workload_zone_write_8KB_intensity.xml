@@ -15,7 +15,7 @@
 			<Time_Unit>NANOSECOND</Time_Unit>
 		</IO_Flow_Parameter_Set_Trace_Based>
     </IO_Scenario>
-	<!-- <IO_Scenario>
+	<IO_Scenario>
         <IO_Flow_Parameter_Set_Trace_Based>
 			<Priority_Class>HIGH</Priority_Class>
 			<Device_Level_Data_Caching_Mode>TURNED_OFF</Device_Level_Data_Caching_Mode>
@@ -89,5 +89,5 @@
 			<Relay_Count>1</Relay_Count>
 			<Time_Unit>NANOSECOND</Time_Unit>
 		</IO_Flow_Parameter_Set_Trace_Based>
-    </IO_Scenario> -->
+    </IO_Scenario>
 </MQSim_IO_Scenarios>
