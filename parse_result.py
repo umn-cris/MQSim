@@ -9,7 +9,7 @@ def parse_init(suite):
 
 def parse(suite, tags = {}):
     # loop through all XML files in the folder, this only applies to PageMap suite
-    if "PageMap" in suite:
+    if "PageMap" in suite or "RequestSize" in suite:
         result_dir = "results/"+suite+"/"+tags['desc']
     else:
         result_dir = "results/"+suite
@@ -45,12 +45,28 @@ def parse(suite, tags = {}):
             # Compute the average of Avg_Queue_Length and STDev_Queue_Length
             avg_avg_queue_length = round(sum(avg_queue_lengths) / len(avg_queue_lengths),2)
             avg_stdev_queue_length = round(sum(stdev_queue_lengths) / len(stdev_queue_lengths),2)
-
+            
             # append the result to the suite_dict
             # now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             now = time.ctime(os.path.getctime(file_path))
+
+            # Add worklload types to tags for RequestSize suite
+            mTags = tags.copy()
+            if "RequestSize" in suite:
+                if "sequential" in workload:
+                    mTags['workload_type']= "sequential"
+                else:
+                    mTags['workload_type']= "random"
+                if "write" in workload:
+                    mTags['workload_type2']= "write"
+                    mTags['write_percent'] = "100"
+                elif "read" in workload:
+                    mTags['workload_type2']= "read"
+                    mTags['write_percent'] = "100"
+                else:
+                    mTags['workload_type2']= "mixed"
             global suite_dict
-            suite_dict.get("tests").append({'time': now, 'tags': tags, 'scenario': filename, 'workload': workload, 'bandwidth': bandwidth, 'iops': iops, 'Device_Response_Time': Device_Response_Time, 'interleave_program_cmd': interleave_program_cmd, 'multiplane_program_cmd': multiplane_program_cmd, 'copy_program_cmd': copy_program_cmd, 'Average Avg_Queue_Length': avg_avg_queue_length, 'Average STDev_Queue_Length': avg_stdev_queue_length})
+            suite_dict.get("tests").append({'time': now, 'tags': mTags, 'scenario': filename, 'workload': workload, 'bandwidth': bandwidth, 'iops': iops, 'Device_Response_Time': Device_Response_Time, 'interleave_program_cmd': interleave_program_cmd, 'multiplane_program_cmd': multiplane_program_cmd, 'copy_program_cmd': copy_program_cmd, 'Average Avg_Queue_Length': avg_avg_queue_length, 'Average STDev_Queue_Length': avg_stdev_queue_length})
             
 
 def parse_flush(suite):
@@ -72,7 +88,8 @@ def parse_flush(suite):
         if index_to_replace != -1:
             if "PageMap" in suite:
                 existing_data[index_to_replace]['tests'].extend(suite_dict['tests'])
-            existing_data[index_to_replace] = suite_dict
+            else:
+                existing_data[index_to_replace] = suite_dict
         else:
             existing_data.append(suite_dict)
 

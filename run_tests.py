@@ -27,9 +27,9 @@ def main():
             for test in suite.iter('Test'):
                 ssdcfg = test.find('SSDConfig').text
                 workload = test.find('Workload').text
-                test_tags = gather_tags(test)
+                test_tags = gather_tags(test, workload)
 
-                if "PageMap" in suite_name:
+                if "PageMap" in suite_name or "RequestSize" in suite_name:
                     result_dir = "results/"+suite_name+"/"+test_tags['desc']
                 else:
                     result_dir = "results/"+suite_name
@@ -37,26 +37,26 @@ def main():
                 # run individual tests spicified by suite "run" attribute
                 # if run==false, but uid is specified as arg, run it
                 
-                # if not os.path.exists(result_dir):
-                #     os.makedirs(result_dir)
+                if not os.path.exists(result_dir):
+                    os.makedirs(result_dir)
 
-                # cmd = os.getcwd()+"/MQSim -i "+ssdcfg+" -w "+workload
-                # os.system(cmd)
+                cmd = os.getcwd()+"/MQSim -i "+ssdcfg+" -w "+workload
+                os.system(cmd)
         
-                # # move all scenario xml to result directory
-                # os.chdir('workload/'+suite_name)
-                # os.system('mv *_scenario* ../../'+result_dir)
-                # os.chdir(cwd)
+                # move all scenario xml to result directory
+                os.chdir('workload/'+suite_name)
+                os.system('mv *_scenario* ../../'+result_dir)
+                os.chdir(cwd)
 
                 pr.parse(suite_name, test_tags)
             pr.parse_flush(suite_name)
 
 
 
-def gather_tags(test):
+def gather_tags(test, workload):
     """Gather test tags"""
     tags = {}
-    tags['desc'] = test.attrib['desc'].title().capitalize()
+    tags['desc'] = test.attrib['desc'].title().upper()
     tags['request_size'] = test.attrib['request_size'].title().upper()
     tags['workload_type'] = test.attrib['workload_type'].title().lower()
     tags['workload_type2'] = test.attrib['workload_type2'].title().lower()

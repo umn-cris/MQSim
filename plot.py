@@ -99,8 +99,8 @@ if __name__ == "__main__":
 
     # plot_y_key(tests_50us, 'Average Avg_Queue_Length', '[PageMap] Average Queue Length for 50us intensity').show()
     # plot_y_key(tests_50us, 'Device_Response_Time', '[PageMap] Device Response Time for 50us intensity').show()
-    # plot_y_key(tests_60us, 'Average Avg_Queue_Length', '[PageMap] Average Queue Length for 60us intensity').show()
-    # plot_y_key(tests_60us, 'Device_Response_Time', '[PageMap] Device Response Time for 50us intensity').show()
+    plot_y_key(tests_60us, 'Average Avg_Queue_Length', '[PageMap] Average Queue Length for 60us intensity').show()
+    plot_y_key(tests_60us, 'Device_Response_Time', '[PageMap] Device Response Time for 50us intensity').show()
 
-    plot_multi_y_key(6,tests_50us+tests_52us+tests_54us+tests_56us+tests_58us+tests_60us, 'Average Avg_Queue_Length', '[PageMap] Average Queue Length for all intensities').show()
-    plot_multi_y_key(6,tests_50us+tests_52us+tests_54us+tests_56us+tests_58us+tests_60us, 'Device_Response_Time', '[PageMap] Device Response Time for all intensities').show()
+    #plot_multi_y_key(6,tests_50us+tests_52us+tests_54us+tests_56us+tests_58us+tests_60us, 'Average Avg_Queue_Length', '[PageMap] Average Queue Length for all intensities').show()
+    #plot_multi_y_key(6,tests_50us+tests_52us+tests_54us+tests_56us+tests_58us+tests_60us, 'Device_Response_Time', '[PageMap] Device Response Time for all intensities').show()
