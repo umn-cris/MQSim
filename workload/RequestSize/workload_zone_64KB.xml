@@ -9,7 +9,7 @@
 			<Die_IDs>0,1</Die_IDs>
 			<Plane_IDs>0,1</Plane_IDs>
 			<Initial_Occupancy_Percentage>0</Initial_Occupancy_Percentage>
-			<File_Path>traces/trace_files/sequential_write_8KB_from_zone0_1GB_60us</File_Path>
+			<File_Path>traces/trace_files/sequential_write_64KB_from_zone0_1GB_60us</File_Path>
 			<Percentage_To_Be_Executed>100</Percentage_To_Be_Executed>
 			<Relay_Count>1</Relay_Count>
 			<Time_Unit>NANOSECOND</Time_Unit>
@@ -24,7 +24,7 @@
 			<Die_IDs>0,1</Die_IDs>
 			<Plane_IDs>0,1</Plane_IDs>
 			<Initial_Occupancy_Percentage>0</Initial_Occupancy_Percentage>
-			<File_Path>traces/trace_files/sequential_read_8KB_from_zone0_1GB_60us</File_Path>
+			<File_Path>traces/trace_files/sequential_read_64KB_from_zone0_1GB_60us</File_Path>
 			<Percentage_To_Be_Executed>100</Percentage_To_Be_Executed>
 			<Relay_Count>1</Relay_Count>
 			<Time_Unit>NANOSECOND</Time_Unit>
@@ -39,7 +39,7 @@
 			<Die_IDs>0,1</Die_IDs>
 			<Plane_IDs>0,1</Plane_IDs>
 			<Initial_Occupancy_Percentage>0</Initial_Occupancy_Percentage>
-			<File_Path>traces/trace_files/sequential_mixed50_8KB_from_zone0_1GB_60us</File_Path>
+			<File_Path>traces/trace_files/sequential_mixed50_64KB_from_zone0_1GB_60us</File_Path>
 			<Percentage_To_Be_Executed>100</Percentage_To_Be_Executed>
 			<Relay_Count>1</Relay_Count>
 			<Time_Unit>NANOSECOND</Time_Unit>
@@ -54,7 +54,7 @@
 			<Die_IDs>0,1</Die_IDs>
 			<Plane_IDs>0,1</Plane_IDs>
 			<Initial_Occupancy_Percentage>0</Initial_Occupancy_Percentage>
-			<File_Path>traces/trace_files/random_write_8KB_from_zone0_1GB_60us</File_Path>
+			<File_Path>traces/trace_files/random_write_64KB_from_zone0_1GB_60us</File_Path>
 			<Percentage_To_Be_Executed>100</Percentage_To_Be_Executed>
 			<Relay_Count>1</Relay_Count>
 			<Time_Unit>NANOSECOND</Time_Unit>
@@ -69,7 +69,7 @@
 			<Die_IDs>0,1</Die_IDs>
 			<Plane_IDs>0,1</Plane_IDs>
 			<Initial_Occupancy_Percentage>0</Initial_Occupancy_Percentage>
-			<File_Path>traces/trace_files/random_read_8KB_from_zone0_1GB_60us</File_Path>
+			<File_Path>traces/trace_files/random_read_64KB_from_zone0_1GB_60us</File_Path>
 			<Percentage_To_Be_Executed>100</Percentage_To_Be_Executed>
 			<Relay_Count>1</Relay_Count>
 			<Time_Unit>NANOSECOND</Time_Unit>
@@ -84,7 +84,7 @@
 			<Die_IDs>0,1</Die_IDs>
 			<Plane_IDs>0,1</Plane_IDs>
 			<Initial_Occupancy_Percentage>0</Initial_Occupancy_Percentage>
-			<File_Path>traces/trace_files/random_mixed50_8KB_from_zone0_1GB_60us</File_Path>
+			<File_Path>traces/trace_files/random_mixed50_64KB_from_zone0_1GB_60us</File_Path>
 			<Percentage_To_Be_Executed>100</Percentage_To_Be_Executed>
 			<Relay_Count>1</Relay_Count>
 			<Time_Unit>NANOSECOND</Time_Unit>

@@ -14,7 +14,7 @@ unsigned int biggest_zone_number = 14;
 unsigned int total_size_of_accessed_file_in_GB = 1;
 unsigned int total_no_of_request = 10000;
 unsigned int read_write = 1;
-unsigned int intensity_us = 50;
+unsigned int intensity_us = 60;
 string arrival_time;
 string start_LBA;
 string device_number;

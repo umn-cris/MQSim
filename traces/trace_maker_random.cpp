@@ -8,11 +8,15 @@ using namespace std;
 
 const unsigned int sector_size_in_bytes = 512;
 const unsigned int zone_size_MB = 256;
+unsigned int request_size_in_KB = 8;
 unsigned int smallest_zone_number = 2;
 unsigned int biggest_zone_number;
 unsigned int total_size_of_accessed_file_in_GB = 1;
 unsigned int total_no_of_request = 10000;
+unsigned int read_write = 1;
+unsigned int intensity_us = 60;
 unsigned int zone_number;
+string type_of_request;
 
 struct zone {
     unsigned int zone_ID;
@@ -36,18 +40,15 @@ int main(int argc, char** argv) {
 
     std::cout << "This generates a random write requests." << std::endl;
 
-    unsigned int request_size_in_KB;
-    cout << "Please enter the request size in KB : ";
-    scanf("%u", &request_size_in_KB);
+    request_size_in_KB = atoi(argv[1]);
+    smallest_zone_number = atoi(argv[2]);
+    total_size_of_accessed_file_in_GB = atoi(argv[3]);
+    read_write = atoi(argv[4]);
+    intensity_us = atoi(argv[5]);
+    type_of_request = read_write==1?"read":"write";
 
-    cout << "Please enter the smallest zone number : ";
-    scanf("%u", &smallest_zone_number);
-
-    cout << "Please enter the whole file size to be accessed in GB : ";
-    scanf("%u", &total_size_of_accessed_file_in_GB);
-
-    string outputfile = "random_write_" + to_string(request_size_in_KB) + "KB_from_zone" \
-                        + to_string(smallest_zone_number) + "_" + to_string(total_size_of_accessed_file_in_GB) + "GB";
+    string outputfile = "random_"+type_of_request+"_" + to_string(request_size_in_KB) + "KB_from_zone" \
+                        + to_string(smallest_zone_number) + "_" + to_string(total_size_of_accessed_file_in_GB) + "GB_" + to_string(intensity_us) + "us";
     cout << "output file name is " << outputfile << endl;
     
     zone_number = total_size_of_accessed_file_in_GB * 1024 / 256;
