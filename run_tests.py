@@ -29,10 +29,7 @@ def main():
                 workload = test.find('Workload').text
                 test_tags = gather_tags(test, workload)
 
-                if "PageMap" in suite_name or "RequestSize" in suite_name:
-                    result_dir = "results/"+suite_name+"/"+test_tags['desc']
-                else:
-                    result_dir = "results/"+suite_name
+                result_dir = "results/"+suite_name+"/"+test_tags['desc']
 
                 # run individual tests spicified by suite "run" attribute
                 # if run==false, but uid is specified as arg, run it

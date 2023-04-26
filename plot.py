@@ -115,7 +115,7 @@ def plot_suite_requestsize(result):
     tests_rand_w = select_tests_by_workload(rs,"random", "write")
     tests_rand_r = select_tests_by_workload(rs,"random", "read")
 
-    plot_y_key(tests_seq_w, 'Average Avg_Queue_Length', '[RequestSize] Average Avg_Queue_Length for sequential write').show()
+    plot_y_key(tests_seq_w, 'Average Avg_Queue_Length', '[equestSize] Average Avg_Queue_Length for sequential write').show()
     plot_y_key(tests_seq_r, 'Average Avg_Queue_Length', '[RequestSize] Average Avg_Queue_Length for sequential read').show()
     plot_y_key(tests_rand_w, 'Average Avg_Queue_Length', '[RequestSize] Average Avg_Queue_Length for random write').show()
     plot_y_key(tests_rand_r, 'Average Avg_Queue_Length', '[RequestSize] Average Avg_Queue_Length for random read').show()
@@ -127,6 +127,6 @@ def plot_suite_requestsize(result):
 
 if __name__ == "__main__":
     result = read_json("results/result.json")
-    # plot_suite_pagemapinsentisy(result)
+    #plot_suite_pagemapinsentisy(result)
     plot_suite_requestsize(result)
     # plot_suite_multistream(result)

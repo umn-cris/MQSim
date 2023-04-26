@@ -4,7 +4,7 @@ import os
 req_size_in_kb = ["4","8","16","32","64"]
 intensity_us = ["60"]
 trace_size_in_GB = "1"
-begin_zone = [0]
+begin_zone = [1,17,33,49]
 #begin_zone = [16*i+1 for i in xrange(32)]
 type_of_request = "write"
 
