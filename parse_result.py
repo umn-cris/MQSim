@@ -9,10 +9,7 @@ def parse_init(suite):
 
 def parse(suite, tags = {}):
     # loop through all XML files in the folder, this only applies to PageMap suite
-    if "PageMap" in suite or "RequestSize" in suite:
-        result_dir = "results/"+suite+"/"+tags['desc']
-    else:
-        result_dir = "results/"+suite
+    result_dir = "results/"+suite+"/"+tags['desc']
     
     for filename in os.listdir(result_dir):
         if filename.endswith(".xml"):
@@ -94,4 +91,4 @@ def parse_flush(suite):
             existing_data.append(suite_dict)
 
     with open(json_file, 'w') as file:
-        json.dump(existing_data, file, indent = 4)
+        json.dump(existing_data, file, indent = 4,  sort_keys=True, reverse=True)

@@ -48,6 +48,7 @@ def plot_y_key(tests, y_key, title) -> plt:
     return plt
 
 def plot_multi_y_key(n,tests, y_key, title) -> plt:
+    """Plot multiple y keys in one figure"""
     fig, ax = plt.subplots()
     ymax = 0
     ymin = 1000000
@@ -115,7 +116,7 @@ def plot_suite_requestsize(result):
     tests_rand_w = select_tests_by_workload(rs,"random", "write")
     tests_rand_r = select_tests_by_workload(rs,"random", "read")
 
-    plot_y_key(tests_seq_w, 'Average Avg_Queue_Length', '[equestSize] Average Avg_Queue_Length for sequential write').show()
+    plot_y_key(tests_seq_w, 'Average Avg_Queue_Length', '[RequestSize] Average Avg_Queue_Length for sequential write').show()
     plot_y_key(tests_seq_r, 'Average Avg_Queue_Length', '[RequestSize] Average Avg_Queue_Length for sequential read').show()
     plot_y_key(tests_rand_w, 'Average Avg_Queue_Length', '[RequestSize] Average Avg_Queue_Length for random write').show()
     plot_y_key(tests_rand_r, 'Average Avg_Queue_Length', '[RequestSize] Average Avg_Queue_Length for random read').show()
@@ -125,8 +126,15 @@ def plot_suite_requestsize(result):
     plot_y_key(tests_rand_w, 'Device_Response_Time', '[RequestSize] Device_Response_Time for random write').show()
     plot_y_key(tests_rand_r, 'Device_Response_Time', '[RequestSize] Device_Response_Time for random read').show()
 
+def plot_suite_multistream(result):
+    ms = [suite['tests'] for suite in result if suite['suite'] == "MultiStream"][0]
+    plot_y_key(ms, 'Average Avg_Queue_Length', '[MultiStream] Average Avg_Queue_Length for sequential write').show()
+    plot_y_key(ms, 'Device_Response_Time', '[MultiStream] Device_Response_Time for sequential write').show()
+    plot_y_key(ms, 'multiplane_program_cmd', '[MultiStream] multiplane_program_cmd for sequential write').show()
+    plot_y_key(ms, 'iops', '[MultiStream] multiplane_program_cmd for sequential write').show()
+    
 if __name__ == "__main__":
     result = read_json("results/result.json")
     #plot_suite_pagemapinsentisy(result)
-    plot_suite_requestsize(result)
-    # plot_suite_multistream(result)
+    #plot_suite_requestsize(result)
+    plot_suite_multistream(result)

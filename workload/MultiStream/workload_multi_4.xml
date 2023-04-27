@@ -12,7 +12,7 @@
 			<File_Path>traces/trace_files/sequential_write_8KB_from_zone1_1GB_60us</File_Path>
 			<Percentage_To_Be_Executed>100</Percentage_To_Be_Executed>
 			<Relay_Count>1</Relay_Count>
-			<Time_Unit>PICOSECOND</Time_Unit>
+			<Time_Unit>NANOSECOND</Time_Unit>
 		</IO_Flow_Parameter_Set_Trace_Based>
 		<IO_Flow_Parameter_Set_Trace_Based>
 			<Priority_Class>HIGH</Priority_Class>
@@ -22,10 +22,10 @@
 			<Die_IDs>0,1</Die_IDs>
 			<Plane_IDs>0,1</Plane_IDs>
 			<Initial_Occupancy_Percentage>0</Initial_Occupancy_Percentage>
-			<File_Path>traces/trace_files/sequential_write_16KB_from_zone17_1GB_60us</File_Path>
+			<File_Path>traces/trace_files/sequential_write_8KB_from_zone17_1GB_60us</File_Path>
 			<Percentage_To_Be_Executed>100</Percentage_To_Be_Executed>
 			<Relay_Count>1</Relay_Count>
-			<Time_Unit>PICOSECOND</Time_Unit>
+			<Time_Unit>NANOSECOND</Time_Unit>
 		</IO_Flow_Parameter_Set_Trace_Based>
 		<IO_Flow_Parameter_Set_Trace_Based>
 			<Priority_Class>HIGH</Priority_Class>
@@ -35,10 +35,10 @@
 			<Die_IDs>0,1</Die_IDs>
 			<Plane_IDs>0,1</Plane_IDs>
 			<Initial_Occupancy_Percentage>0</Initial_Occupancy_Percentage>
-			<File_Path>traces/trace_files/sequential_write_16KB_from_zone33_1GB_60us</File_Path>
+			<File_Path>traces/trace_files/sequential_write_8KB_from_zone33_1GB_60us</File_Path>
 			<Percentage_To_Be_Executed>100</Percentage_To_Be_Executed>
 			<Relay_Count>1</Relay_Count>
-			<Time_Unit>PICOSECOND</Time_Unit>
+			<Time_Unit>NANOSECOND</Time_Unit>
 		</IO_Flow_Parameter_Set_Trace_Based>
 		<IO_Flow_Parameter_Set_Trace_Based>
 			<Priority_Class>HIGH</Priority_Class>
@@ -48,10 +48,10 @@
 			<Die_IDs>0,1</Die_IDs>
 			<Plane_IDs>0,1</Plane_IDs>
 			<Initial_Occupancy_Percentage>0</Initial_Occupancy_Percentage>
-			<File_Path>traces/trace_files/sequential_write_16KB_from_zone49_1GB_60us</File_Path>
+			<File_Path>traces/trace_files/sequential_write_8KB_from_zone49_1GB_60us</File_Path>
 			<Percentage_To_Be_Executed>100</Percentage_To_Be_Executed>
 			<Relay_Count>1</Relay_Count>
-			<Time_Unit>PICOSECOND</Time_Unit>
+			<Time_Unit>NANOSECOND</Time_Unit>
 		</IO_Flow_Parameter_Set_Trace_Based>
 	</IO_Scenario>
 </MQSim_IO_Scenarios>
