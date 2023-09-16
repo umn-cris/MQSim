@@ -1,19 +1,24 @@
 # Trace file columns definition
 
-## compile tracemaker
+## compile trace generator
 
 ```bash
-c++ trace_maker.cpp -o trace_generator
-mv trace_generator trace_files
+c++ trace_maker.cpp -o trace_generator_sequential
+c++ trace_maker_random.cpp -o trace_generator_random
+mv trace_generator_sequential trace_generator_random trace_files
 ```
+
+Or run `python3 gen_trace.py` to compile the trace generator.
 
 ## run gen_trace.py
 
-run `python gen_trace.py` to create traces for the following feature combination:
+run `python3 gen_trace.py` to create traces for the following feature combination (default):
 
-- request size 4k, 16k, 64k, 256k, 1M, 4M, 16M, 64M
-- start zone 1, (support 32 streams)
-- 
+- request size: [4k,8k,16k,32k,64k]
+- intensity_us: [50,52,53,56,58,60]
+- starting zone: [0,1,17,33,49]
+- type: ["write", "read", "mixed"]
+- read_percentage = [10,25,50,75,90], only used when type is "mixed"
 
 ## trace format
 
@@ -28,7 +33,4 @@ run `python gen_trace.py` to create traces for the following feature combination
 4887300 1 524352 16 0
 ```
 
-the time unit is defined in wordload xml, for example, wordload_zone_max.xml defines it with <Time_Unit>NANOSECOND</Time_Unit>.
-## request type
-0: write
-1: read
+the time unit is defined in workload xml, for example, wordload_zone_max.xml defines it with <Time_Unit>NANOSECOND</Time_Unit>.

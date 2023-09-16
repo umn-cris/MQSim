@@ -63,8 +63,7 @@ int main(int argc, char** argv) {
     //cout << "request size is " << request_size_in_KB << " KB" << endl;
     total_no_of_request = total_size_of_accessed_file_in_GB * 1024 * 1024 / request_size_in_KB;
 
-    // unsigned long long int first_arrival_time = 4851300;
-    unsigned long long int first_arrival_time = 51300;
+    unsigned long long int first_arrival_time = 4851300;
     unsigned long long int first_start_LBA = smallest_zone_number * 512 * 1024; //256 * 1024 * 1024 / 512; == 256 MB / 512 B
     // |---------512 byte-------||---------512 byte-------|
     // LBA :       1                         2
@@ -92,11 +91,8 @@ int main(int argc, char** argv) {
         
         writeFile.write(trace_line.c_str(), trace_line.size());
         trace_line.clear();
-        //sscanf(arrival_time.c_str(), "%llu", &prev_arrival_time); 
-        //sscanf(start_LBA.c_str(), "%llu", &prev_start_LBA); 
 
-        // prev_arrival_time = prev_arrival_time + ((rand() % 15 + 1) * 1000);
-        prev_arrival_time = prev_arrival_time + (intensity_us * 1000);
+        prev_arrival_time = prev_arrival_time + (intensity_us * 1000); // this assumes the time unit defined in workload.xml is in NANOSECOND
         prev_start_LBA = prev_start_LBA + request_size_in_KB * 2; // 2 == 1024 / sector_size_in_bytes;
     }
     cout << "total number of requests: " << total_no_of_request << ", read count: " << read_count << ", write count: "<< write_count << endl;
