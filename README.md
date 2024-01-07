@@ -9,6 +9,27 @@ workload/  ZNS-SSD workload definition
 traces/    ZNS-SSD generated synthetic traces, including sequential and random trace generators
 results/   ZNS-SSD experiment result xml files, result of `./MQSim -i <SSD config> -w <workload>`
 
+## Python helper scripts
+
+```python
+$ python3 run_tests.py
+```
+Parse `run_tests.config`, run `Suite` with `run` set as "true". Each `Test` defines a `SSDConfig` and a `Workload`. Parsed result of `[suite_name]` is stored in `results/result.json`. If suite result existed in result.json, the parse script replaces it.
+Note: Suite tests [desc] should be unique single word, no space. Multiple words is not tested.
+
+Normally, parse_result is called by run_tests.py to convert MQSim output xml to result.json. If the result.json is insatisfactory, then parse_result can be called with its main function.
+
+```python
+$ python3 parse_result.py
+```
+
+```python
+
+```python
+$ python3 plot.py
+```
+
+Modify plot.py main function to select what data to select from `results/result.json`. Plot result is stored in `results/plot.png`.
 
 ## Usage in Linux
 Run following commands:

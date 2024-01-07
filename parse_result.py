@@ -2,6 +2,8 @@ import json
 import os
 import xml.etree.ElementTree as ET
 import time
+import run_tests as rt
+import re
 
 def parse_init(suite):
     global suite_dict
@@ -49,30 +51,31 @@ def parse(suite, tags = {}):
 
             # Add worklload types to tags for RequestSize suite
             mTags = tags.copy()
-            if "RequestSize" in suite:
-                if "sequential" in workload:
-                    mTags['workload_type']= "sequential"
-                else:
-                    mTags['workload_type']= "random"
-                if "write" in workload:
-                    mTags['workload_type2']= "write"
-                    mTags['write_percent'] = "100"
-                elif "read" in workload:
-                    mTags['workload_type2']= "read"
-                    mTags['write_percent'] = "100"
-                else:
-                    mTags['workload_type2']= "mixed"
+            # if "RequestSize" in suite or "MultiStream" in suite or "ZoneSize" in suite:
+            if "sequential" in workload:
+                mTags['workload_type']= "sequential"
+            else:
+                mTags['workload_type']= "random"
+            if "write" in workload:
+                mTags['workload_type2']= "write"
+                mTags['write_percent'] = "100"
+            elif "mixed" in workload:
+                mTags['workload_type2']= "mixed"
+                mTags['write_percent']= str(100-int(re.findall(r'\d+', workload)[0]))
+            elif "read" in workload:
+                mTags['workload_type2']= "read"
+                mTags['write_percent'] = "0"
             global suite_dict
             suite_dict.get("tests").append({'time': now, 'tags': mTags, 'scenario': filename, 'workload': workload, 'bandwidth': bandwidth, 'iops': iops, 'Device_Response_Time': Device_Response_Time, 'interleave_program_cmd': interleave_program_cmd, 'multiplane_program_cmd': multiplane_program_cmd, 'copy_program_cmd': copy_program_cmd, 'Average Avg_Queue_Length': avg_avg_queue_length, 'Average STDev_Queue_Length': avg_stdev_queue_length})
             
 
 def parse_flush(suite):
     json_file = "results/result.json"
-    if os.path.exists(json_file):
+    if not os.path.exists(json_file) or os.stat(json_file).st_size == 0:
+        existing_data = []
+    else:
         with open(json_file, 'r') as file:
             existing_data = json.load(file)
-    else:
-        existing_data = []
 
     index_to_replace = -1
     for i, obj in enumerate(existing_data):
@@ -91,4 +94,26 @@ def parse_flush(suite):
             existing_data.append(suite_dict)
 
     with open(json_file, 'w') as file:
-        json.dump(existing_data, file, indent = 4,  sort_keys=True, reverse=True)
+        json.dump(existing_data, file, indent = 4,  sort_keys=True)
+
+
+# Only used when parse result needed to be run by hand, not triggered by run_tests.py
+# Content copied from run_tests.py main()
+def main():
+    tree = ET.parse('run_tests.config')
+    root = tree.getroot()
+    cwd = os.getcwd()
+
+    for suite in root.iter('Suite'):
+        suite_name = suite.attrib["name"]
+        run = suite.attrib["run"].title() == 'True'
+        if run:
+            parse_init(suite_name)
+            for test in suite.iter('Test'):
+                workload = test.find('Workload').text
+                test_tags = rt.gather_tags(test, workload)
+                parse(suite_name, test_tags)
+            parse_flush(suite_name)
+
+if __name__ == "__main__":
+    main()

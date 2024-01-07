@@ -15,7 +15,7 @@ Or run `python3 gen_trace.py` to compile the trace generator.
 run `python3 gen_trace.py` to create traces for the following feature combination (default):
 
 - request size: [4k,8k,16k,32k,64k]
-- intensity_us: [50,52,53,56,58,60]
+- intensity_us: [50,52,54,56,58,60]
 - starting zone: [0,1,17,33,49]
 - type: ["write", "read", "mixed"]
 - read_percentage = [10,25,50,75,90], only used when type is "mixed"

@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import json
 import numpy as np
@@ -8,6 +10,9 @@ def read_json(path) -> dict:
     with open(path, 'r') as f:
         return json.load(f)
 
+def select_tests_by_trace_size(trace_size_in_gb, tests):
+    """Return a list of tests"""
+    return [test for test in tests if trace_size_in_gb in test['workload']]
 
 def select_tests_by_intensity(tests, intensity_in_us):
     """Return a list of x values"""
@@ -17,6 +22,11 @@ def select_tests_by_workload(tests,workload_type, workload_type2):
     """Return a list of x values"""
     return [test for test in tests if workload_type in test['tags']['workload_type'] and workload_type2 in test['tags']['workload_type2']]
 
+def select_tests_by_desc(tests, desc):
+    """Return a list of x values"""
+    return [test for test in tests if test['tags']['desc'] == desc]
+
+# private method used by plot_multi_y_key
 def select_from_tag(tests, tag):
     """Return a list of x values"""
     return [test['tags'][tag] for test in tests]
@@ -25,70 +35,101 @@ def select_y_array(tests, y_key):
     """Return a list of y values"""
     return [test[y_key] for test in tests]
 
-def plot_y_key(tests, y_key, title) -> plt:
+def plot_y_key(tests, x_key, y_key, title, output_path):
     x = select_from_tag(tests, 'desc')
     y = select_y_array(tests, y_key)
+    if y_key == "Device_Response_Time":
+        y_key = "Device Response Time" + " (ns)"
 
     fig, ax = plt.subplots()
-    ax.bar(x, y)
-    ax.set_title(title)
-
-    plt.xticks(rotation='vertical')
-    plt.xlabel('Page mapping scheme')
-    plt.ylabel(y_key)
 
     tags = tests[0]['tags']
-    diff = (max(y)-min(y))/10
+    diff = (max(y)-min(y))/8
     ax.set_ylim(bottom=min(y)-diff, top=max(y)+diff)
-    plt.text(len(x)+1, max(y)-diff, 'request_size:'+tags['request_size']+'\nworkload:'+tags['workload_type']+'\n               '+tags['workload_type2']+'\nwrite%:'+tags['write_percent']+'\nzone_size:'+tags['zone_size'])
+    if "PageMap" in title:
+        ax.text(len(x)+1, max(y)-diff, 'request_size:'+tags['request_size']+'\nworkload:'+tags['workload_type']+'\n               '+tags['workload_type2']+'\nwrite%:'+tags['write_percent']+'\nzone_size:'+tags['zone_size'])
+    elif "ZoneSize" in title:
+        ax.text(len(x)+1, max(y)-diff, 'request_size:'+tags['request_size']+'\nworkload:'+tags['workload_type']+'\n               '+tags['workload_type2']+'\nwrite%:'+tags['write_percent'])
+
+    ax.set_title(title)
+    ax.set_xlabel(x_key)
+    ax.set_ylabel(y_key)
     
     for i, value in enumerate(y):
-        plt.text(x[i], y[i], str(value), horizontalalignment='center', verticalalignment='bottom')
+        ax.text(x[i], y[i], str(value), horizontalalignment='center', verticalalignment='bottom')
 
-    return plt
+    ax.bar(x,y)
 
-def plot_multi_y_key(n,tests, y_key, title) -> plt:
+    plt.xticks(rotation='vertical')
+    plt.tight_layout()
+
+    plt.savefig(output_path)
+    plt.close()
+
+def plot_multi_y_key(n, tests, x_key, y_key, title, output_path):
     """Plot multiple y keys in one figure"""
     fig, ax = plt.subplots()
     ymax = 0
     ymin = 1000000
-    bar_width = 1/(n+1)
+    bar_width = 1 / (n + 1)
     x_pos = list()
     for i in range(n):
-        x_pos.append([x + bar_width*i for x in np.arange(len(tests)//n)])
+        x_pos.append([x + bar_width * i for x in np.arange(len(tests) // n)])
 
-    
-    x = select_from_tag(tests[:len(tests)//n], 'desc')
-    
+    x = select_from_tag(tests[:len(tests) // n], 'desc')
+
     for i in range(n):
-        y=select_y_array(tests[i*len(tests)//n:(i+1)*len(tests)//n], y_key)
-        ax.bar(x_pos[i], y, width=bar_width, label=str(i*2+50)+'us')
+        test_id = i * len(tests) // n
+        # y = select_y_array(tests[i * len(tests) // n:(i + 1) * len(tests) // n], y_key)
+        y = select_y_array(tests[test_id:test_id+len(tests) // n], y_key)
+
+        patterns = ["/", "\\", "|", "+", "x", "o", "O", ".", "*"]
+
+        if "PageMap" in title:
+            ax.bar(x_pos[i], y, width=bar_width, label=str(i * 2 + 50) + 'us')
+        elif "ZoneSize" in title or "MultiStream" in title:
+            ax.bar(x_pos[i], y, width=bar_width, label=tests[test_id]['tags']['workload_type']+' '+tests[test_id]['tags']['workload_type2'],  hatch=patterns[i % len(patterns)])
+        else: # catch default case
+            ax.bar(x_pos[i], y, width=bar_width, label=tests[test_id]['tags']['workload_type']+' '+tests[test_id]['tags']['workload_type2'])
         ymax = max(ymax, max(y))
         ymin = min(ymin, min(y))
-    
+
+        ### Display text on top of each bar
         # for j, value in enumerate(y):
         #     plt.text(x_pos[i][j], y[j], str(value), horizontalalignment='center', verticalalignment='bottom')
 
-    
+    if y_key == "Device_Response_Time":
+            y_key = "Device Response Time" + " (ns)"
+            
     ax.set_title(title)
     ax.legend()
-    
+
     ax.set_xticks([r + bar_width for r in range(len(x))])
     ax.set_xticklabels(x)
-    plt.xticks(rotation='vertical', fontsize=8)
+    plt.xticks(rotation='horizontal', fontsize=8)
     plt.tick_params(axis='x', which='major', width=4)
-    plt.xlabel('Page mapping scheme')
+    plt.xlabel(x_key)
     plt.ylabel(y_key)
-   
 
     tags = tests[0]['tags']
-    diff = (ymax-ymin)/10
-    ax.set_ylim(bottom=ymin-diff, top=ymax+diff)
-    plt.text(len(x)+1, ymax-diff, 'request_size:'+tags['request_size']+'\nworkload:'+tags['workload_type']+'\n               '+tags['workload_type2']+'\nwrite%:'+tags['write_percent']+'\nzone_size:'+tags['zone_size'])
+    diff = (ymax - ymin) / 8
+    ax.set_ylim(bottom=ymin - diff, top=ymax + diff)
+    if "PageMap" in title:
+        ax.text(len(x) + 1, ymax - diff, 'request_size:' + tags['request_size'] +
+            '\nworkload:' + tags['workload_type'] + '\n               ' + tags['workload_type2'] +
+            '\nwrite%:' + tags['write_percent'] + '\nzone_size:' + tags['zone_size'])
+    elif "ZoneSize" in title:
+        ax.text(len(x) + 1, ymax - diff, 'request_size:' + tags['request_size'] +
+                '\nworkload:' + tags['workload_type'] + '\n               ' + tags['workload_type2'] +
+                '\nwrite%:' + tags['write_percent'])
 
-    plt.figure(figsize=(600, 100))
     plt.tight_layout()
-    return plt
+
+    ax.set_facecolor('white')  # Set the background color to white
+    
+    plt.savefig(output_path)
+    plt.close()
+
 
 def plot_suite_pagemapinsentisy(result):
     pm = [suite['tests'] for suite in result if suite['suite'] == "PageMapIntensity"][0]
@@ -100,13 +141,13 @@ def plot_suite_pagemapinsentisy(result):
     tests_58us = select_tests_by_intensity(pm,"58us")
     tests_60us = select_tests_by_intensity(pm,"60us")
     
-    plot_y_key(tests_50us, 'Average Avg_Queue_Length', '[PageMap] Average Queue Length for 50us intensity').show()
-    plot_y_key(tests_50us, 'Device_Response_Time', '[PageMap] Device Response Time for 50us intensity').show()
-    plot_y_key(tests_60us, 'Average Avg_Queue_Length', '[PageMap] Average Queue Length for 60us intensity').show()
-    plot_y_key(tests_60us, 'Device_Response_Time', '[PageMap] Device Response Time for 50us intensity').show()
+    plot_y_key(tests_50us, 'Page mapping scheme', 'Average Avg_Queue_Length', '[PageMap] Average Queue Length for 50us intensity',"graphs/pagemap1.pdf")
+    plot_y_key(tests_50us, 'Page mapping scheme', 'Device_Response_Time', '[PageMap] Device Response Time for 50us intensity',"graphs/pagemap2.pdf")
+    plot_y_key(tests_60us, 'Page mapping scheme', 'Average Avg_Queue_Length', '[PageMap] Average Queue Length for 60us intensity',"graphs/pagemap3.pdf")
+    plot_y_key(tests_60us, 'Page mapping scheme', 'Device_Response_Time', '[PageMap] Device Response Time for 50us intensity',"graphs/pagemap4.pdf")
 
-    plot_multi_y_key(6,tests_50us+tests_52us+tests_54us+tests_56us+tests_58us+tests_60us, 'Average Avg_Queue_Length', '[PageMap] Average Queue Length for all intensities').show()
-    plot_multi_y_key(6,tests_50us+tests_52us+tests_54us+tests_56us+tests_58us+tests_60us, 'Device_Response_Time', '[PageMap] Device Response Time for all intensities').show()
+    plot_multi_y_key(6,tests_50us+tests_52us+tests_54us+tests_56us+tests_58us+tests_60us, 'Page mapping scheme', 'Average Avg_Queue_Length', '[PageMap] Average Queue Length for all intensities',"graphs/pagemap5.pdf")
+    plot_multi_y_key(6,tests_50us+tests_52us+tests_54us+tests_56us+tests_58us+tests_60us, 'Page mapping scheme', 'Device_Response_Time', '[PageMap] Device Response Time for all intensities',"graphs/pagemap6.pdf")
 
 def plot_suite_requestsize(result):
     rs = [suite['tests'] for suite in result if suite['suite'] == "RequestSize"][0]
@@ -116,25 +157,64 @@ def plot_suite_requestsize(result):
     tests_rand_w = select_tests_by_workload(rs,"random", "write")
     tests_rand_r = select_tests_by_workload(rs,"random", "read")
 
-    plot_y_key(tests_seq_w, 'Average Avg_Queue_Length', '[RequestSize] Average Avg_Queue_Length for sequential write').show()
-    plot_y_key(tests_seq_r, 'Average Avg_Queue_Length', '[RequestSize] Average Avg_Queue_Length for sequential read').show()
-    plot_y_key(tests_rand_w, 'Average Avg_Queue_Length', '[RequestSize] Average Avg_Queue_Length for random write').show()
-    plot_y_key(tests_rand_r, 'Average Avg_Queue_Length', '[RequestSize] Average Avg_Queue_Length for random read').show()
+    # plot_y_key(tests_seq_w, 'RequestSize', 'Average Avg_Queue_Length', '[RequestSize] Average Avg_Queue_Length for sequential write',"graphs/requestsize1.pdf")
+    # plot_y_key(tests_seq_r, 'RequestSize', 'Average Avg_Queue_Length', '[RequestSize] Average Avg_Queue_Length for sequential read',"graphs/requestsize2.pdf")
+    # plot_y_key(tests_rand_w, 'RequestSize', 'Average Avg_Queue_Length', '[RequestSize] Average Avg_Queue_Length for random write',"graphs/requestsize3.pdf")
+    # plot_y_key(tests_rand_r, 'RequestSize', 'Average Avg_Queue_Length', '[RequestSize] Average Avg_Queue_Length for random read',"graphs/requestsize4.pdf")
 
-    plot_y_key(tests_seq_w, 'Device_Response_Time', '[RequestSize] Device_Response_Time for sequential write').show()
-    plot_y_key(tests_seq_r, 'Device_Response_Time', '[RequestSize] Device_Response_Time for sequential read').show()
-    plot_y_key(tests_rand_w, 'Device_Response_Time', '[RequestSize] Device_Response_Time for random write').show()
-    plot_y_key(tests_rand_r, 'Device_Response_Time', '[RequestSize] Device_Response_Time for random read').show()
+    # plot_y_key(tests_seq_w, 'RequestSize', 'Device_Response_Time', '[RequestSize] Device_Response_Time for sequential write',"graphs/requestsize5.pdf")
+    # plot_y_key(tests_seq_r, 'RequestSize', 'Device_Response_Time', '[RequestSize] Device_Response_Time for sequential read',"graphs/requestsize6.pdf")
+    # plot_y_key(tests_rand_w, 'RequestSize', 'Device_Response_Time', '[RequestSize] Device_Response_Time for random write',"graphs/requestsize7.pdf")
+    # plot_y_key(tests_rand_r, 'RequestSize', 'Device_Response_Time', '[RequestSize] Device_Response_Time for random read',"graphs/requestsize8.pdf")
+    plot_multi_y_key(4, tests_seq_w+tests_seq_r+tests_rand_w+tests_rand_r, 'RequestSize', 'Average Avg_Queue_Length', '[RequestSize] Average Avg_Queue_Length for all workloads',"graphs/requestsize1.pdf")
+    plot_multi_y_key(4, tests_seq_w+tests_seq_r+tests_rand_w+tests_rand_r, 'RequestSize', 'Device_Response_Time', '[RequestSize] Device_Response_Time for all workloads',"graphs/requestsize2.pdf")
 
 def plot_suite_multistream(result):
     ms = [suite['tests'] for suite in result if suite['suite'] == "MultiStream"][0]
-    plot_y_key(ms, 'Average Avg_Queue_Length', '[MultiStream] Average Avg_Queue_Length for sequential write').show()
-    plot_y_key(ms, 'Device_Response_Time', '[MultiStream] Device_Response_Time for sequential write').show()
-    plot_y_key(ms, 'multiplane_program_cmd', '[MultiStream] multiplane_program_cmd for sequential write').show()
-    plot_y_key(ms, 'iops', '[MultiStream] multiplane_program_cmd for sequential write').show()
+    ms_seq_w = select_tests_by_workload(ms,"sequential", "write")
+    ms_seq_r = select_tests_by_workload(ms,"sequential", "read")
+    ms_seq_m = select_tests_by_workload(ms,"sequential", "mixed")
+    ms_rand_w = select_tests_by_workload(ms,"random", "write")
+    ms_rand_r = select_tests_by_workload(ms,"random", "read")
+    ms_rand_m = select_tests_by_workload(ms,"random", "mixed")
+
+    # plot_y_key(ms, 'Number of Streams', 'Average Avg_Queue_Length', '[MultiStream] Average Avg_Queue_Length for sequential/random read/write',"graphs/multistream1.pdf")
+
+    # plot_y_key(ms_seq_w, 'Number of Streams', 'Device_Response_Time', '[MultiStream] Device_Response_Time for sequential write',"graphs/multistream_seq_w.pdf")
+    # plot_y_key(ms_seq_r, 'Number of Streams', 'Device_Response_Time', '[MultiStream] Device_Response_Time for sequential read',"graphs/multistream_seq_r.pdf")
+    # plot_y_key(ms_seq_m, 'Number of Streams', 'Device_Response_Time', '[MultiStream] Device_Response_Time for sequential mixed read 50%',"graphs/multistream_seq_m.pdf")
+    # plot_y_key(ms_rand_w, 'Number of Streams', 'Device_Response_Time', '[MultiStream] Device_Response_Time for random write',"graphs/multistream_seq_rand_w.pdf")
+    # plot_y_key(ms_rand_r, 'Number of Streams', 'Device_Response_Time', '[MultiStream] Device_Response_Time for random read',"graphs/multistream_seq_rand_r.pdf")
+    # plot_y_key(ms_rand_m, 'Number of Streams', 'Device_Response_Time', '[MultiStream] Device_Response_Time for random mixed read 50%',"graphs/multistream_seq_rand_m.pdf")
     
+    plot_multi_y_key(6, ms_seq_r+ms_rand_r+ms_rand_m+ms_seq_m+ms_seq_w+ms_rand_w, 'Number of Streams', 'Device_Response_Time', '[MultiStream] Device_Response_Time for all workloads',"graphs/multistream_drt.pdf")
+    plot_multi_y_key(4, ms_rand_m+ms_seq_m+ms_seq_w+ms_rand_w, 'Number of Streams', 'multiplane_program_cmd', '[MultiStream] multiplane_program_cmd for all workloads',"graphs/multistream_multiplane.pdf")
+    plot_multi_y_key(6, ms_seq_r+ms_rand_r+ms_rand_m+ms_seq_m+ms_seq_w+ms_rand_w, 'Number of Streams', 'iops', '[MultiStream] multiplane_program_cmd for sequential/random read/write',"graphs/multistream_iops.pdf")
+    
+def plot_suite_zonesize(result):
+    zs = [suite['tests'] for suite in result if suite['suite'] == "ZoneSize"][0]
+    # looking to compare same workload (e.g. sequential mixed read 50%) of same intensity with different zone sizes
+    # intensity I chose whichever intensity resulted in avg_queue_length~=2 to 4
+    tests_seq_w = select_tests_by_trace_size("5GB",select_tests_by_intensity(select_tests_by_workload(zs,"sequential", "write"),"54us"))
+    tests_seq_r = select_tests_by_trace_size("5GB",select_tests_by_intensity(select_tests_by_workload(zs,"sequential", "read"),"40us")) #avg_queue_length is always 0, read is too fast to queue up
+    tests_seq_m = select_tests_by_trace_size("5GB",select_tests_by_intensity(select_tests_by_workload(zs,"sequential", "mixed"),"46us"))
+    tests_rand_w = select_tests_by_trace_size("5GB",select_tests_by_intensity(select_tests_by_workload(zs,"random", "write"),"56us"))
+    tests_rand_r = select_tests_by_trace_size("5GB",select_tests_by_intensity(select_tests_by_workload(zs,"random", "read"),"40us")) #avg_queue_length is always 0, read is too fast to queue up
+    tests_rand_m = select_tests_by_trace_size("5GB",select_tests_by_intensity(select_tests_by_workload(zs,"random", "mixed"), "50us"))
+
+    plot_y_key(tests_seq_w, 'Zone Size', 'Device_Response_Time', '[ZoneSize] Device_Response_Time for sequential writes',"graphs/zonesize_seq_w.pdf")
+    plot_y_key(tests_seq_r, 'Zone Size', 'Device_Response_Time', '[ZoneSize] Device_Response_Time for sequential read',"graphs/zonesize_seq_r.pdf")
+    plot_y_key(tests_seq_m, 'Zone Size', 'Device_Response_Time', '[ZoneSize] Device_Response_Time for sequential mixed read 50%',"graphs/zonesize_seq_m.pdf")
+    plot_y_key(tests_rand_w, 'Zone Size', 'Device_Response_Time', '[ZoneSize] Device_Response_Time for random write',"graphs/zonesize_rand_w.pdf")
+    plot_y_key(tests_rand_r, 'Zone Size', 'Device_Response_Time', '[ZoneSize] Device_Response_Time for random read',"graphs/zonesize_rand_r.pdf")
+    plot_y_key(tests_rand_m, 'Zone Size', 'Device_Response_Time', '[ZoneSize] Device_Response_Time for random mixed read 50%',"graphs/zonesize_rand_m.pdf")
+   
+    # plot_multi_y_key(3,tests_seq_w+tests_seq_r+tests_seq_m, 'Zone Size', 'Device_Response_Time', '[ZoneSize] Sequential workloads with various zone sizes',"graphs/zonesize_seq.pdf")
+    # plot_multi_y_key(3,tests_rand_w+tests_rand_r+tests_rand_m, 'Zone Size', 'Device_Response_Time', '[ZoneSize] Random workloads with various zone sizes',"graphs/zonesize_rand.pdf")
+
 if __name__ == "__main__":
     result = read_json("results/result.json")
-    #plot_suite_pagemapinsentisy(result)
-    #plot_suite_requestsize(result)
+    # plot_suite_pagemapinsentisy(result)
+    # plot_suite_requestsize(result)
     plot_suite_multistream(result)
+    # plot_suite_zonesize(result)
