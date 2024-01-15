@@ -3,6 +3,8 @@ build/
 results/
 graphs/
 traces/trace_files
+traces/real_trace_files
 # vscode
 *.code-workspace
 *.vscode
+__pycache__/

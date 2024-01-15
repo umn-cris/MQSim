@@ -1,39 +1,66 @@
 import csv
 import sys
+import argparse
 from datetime import datetime
 
-def transform_format(input_file, output_file):
-    with open(input_file, 'r') as infile, open(output_file, 'w', newline='') as outfile:
+def transform_format(input_file, output_prefix, selected_asu_set):
+    output_files = {}
+
+    for asu in selected_asu_set:
+        output_file = f"{output_prefix}_asu{asu}"
+        output_files[asu] = open(output_file, 'w', newline='')
+        output_files[asu].writer = csv.writer(output_files[asu], delimiter=' ')
+
+    with open(input_file, 'r') as infile:
         reader = csv.reader(infile)
-        writer = csv.writer(outfile, delimiter=' ')
 
         for line_number, row in enumerate(reader, start=1):
             try:
                 asu, lba, block_size_bytes, rw, timestamp = row[0], int(row[1]), int(row[2]), row[3], float(row[4])
+                if asu in selected_asu_set:
+                    # Convert block size from bytes to sectors (rounded up to the nearest integer)
+                    block_size_in_sector = (block_size_bytes + 511) // 512
 
-                # Convert block size from bytes to kilobytes (rounded up to the nearest integer)
-                block_size_in_kb = (block_size_bytes + 1023) // 1024
+                    # Convert timestamp to milliseconds
+                    timestamp_nanoseconds = int(timestamp * 1000000)
 
-                # Convert timestamp to milliseconds
-                timestamp_nanoseconds = int(timestamp * 1000000)
+                    # Map read (r) to 1, write (w) to 0
+                    request_type = 1 if rw == 'r' else 0
 
-                # Map read (r) to 1, write (w) to 0
-                request_type = 1 if rw == 'r' else 0
-
-                # Write to the output file
-                writer.writerow([timestamp_nanoseconds, 1, lba, block_size_in_kb, request_type])
+                    # Write to the output file
+                    output_files[asu].writer.writerow([timestamp_nanoseconds, 1, lba, block_size_in_sector, request_type])
 
             except IndexError:
                 print(f"Error processing line {line_number}: {row}")
                 # Optionally, you can continue processing other lines or exit the loop.
 
+    for asu, output_file in output_files.items():
+        output_file.close()
+
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print("Usage: python trans_trace.py input_trace output_trace")
+    parser = argparse.ArgumentParser(description='Transform trace file format.')
+    parser.add_argument('input_trace', help='Path to the input trace file')
+    parser.add_argument('output_prefix', help='Prefix for the output trace files')
+    parser.add_argument('-asu', type=str, help='Comma-separated list or range of ASUs to include')
+
+    args = parser.parse_args()
+
+    if not args.asu:
+        print("Error: -asu is required.")
         sys.exit(1)
 
-    input_file = sys.argv[1]
-    output_file = sys.argv[2]
+    selected_asu_set = set()
 
-    transform_format(input_file, output_file)
-    print(f"Transformation complete. Output written to {output_file}")
+    # Process the -asu argument to create the set of selected ASUs
+    asu_ranges = args.asu.split(',')
+    for asu_range in asu_ranges:
+        if '-' in asu_range:
+            start, end = map(int, asu_range.split('-'))
+            selected_asu_set.update(range(start, end + 1))
+        else:
+            selected_asu_set.add(int(asu_range))
+
+    selected_asu_set_as_strings = {str(asu) for asu in selected_asu_set}
+
+    transform_format(args.input_trace, args.output_prefix, selected_asu_set_as_strings)
+    print(f"Transformation complete. Output files written with prefix {args.output_prefix}_asu")
