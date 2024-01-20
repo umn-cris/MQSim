@@ -1,3 +1,10 @@
+# This script analyze the input spc files based on the asu number. It counts the number 
+# of read and write requests for each asu and plot two graphs: percentage of rw requests per asu,
+# and number of rw requests per asu.
+# Sample usage:
+#    cd real_trace_files
+#    python3 analyze_asu.py UMassFinancial/Financial1.spc ../graphs/fin1 png
+
 import csv
 import sys
 import os

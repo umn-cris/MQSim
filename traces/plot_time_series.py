@@ -1,3 +1,8 @@
+# This script plots the timestamp vs LBA graph for the specified ASUs requests of SPC format traces.
+# Sample usage:
+#    cd trace/real_trace_files
+#    python3 ../plot_time_series.py Financial/Financial1.spc ../../graphs/0111_fin1_asu1-4.pdf -asu 1-4 -pct 100  
+
 import csv
 import sys
 import matplotlib.pyplot as plt

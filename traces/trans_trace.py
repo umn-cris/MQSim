@@ -1,3 +1,13 @@
+# This script transforms the trace file format from the SPC format to the format
+# used by the MQSim simulator. -asu follows by the list of ASUs to output.
+
+# Usage:
+#     python3 trans_trace.py <input_trace_file> <output_trace_file_prefix> -asu <asu_list>
+# Exaple:
+#     cd traces/real_trace_files
+#     python3 ../trans_trace.py Financial/Financial1.spc Financial/fin1_ascii -asu 0-23
+#     python3 ../trans_trace.py Financial/Financial1.spc Financial/fin1_ascii -asu 0-2,5,7
+
 import csv
 import sys
 import argparse
