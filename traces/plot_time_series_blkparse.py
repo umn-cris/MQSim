@@ -1,7 +1,7 @@
 # This script plots the timestamp vs LBA graph for the specified PIDs requests of blkparse output format.
 # Sample usage:
 #    cd trace/real_trace_files
-#    python3 ../plot_time_series.py ycsb_rocksdb/ssdtrace-00 ../../graphs/0118-rocksdb-00.pdf -asu 2040 -pct 100  
+#    python3 ../plot_time_series.py ycsb_rocksdb/ssdtrace-00 ../../graphs/0118-rocksdb-00.pdf ssdtrace.cfg
 
 import csv
 import sys
