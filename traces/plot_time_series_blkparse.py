@@ -66,7 +66,7 @@ def plot_time_series(input_file, output_file, config_file):
     for i, (pid, data) in enumerate(pid_data.items()):
 
         color = colors[color_num]
-        color_num += 1
+        color_num = (color_num + 1) % len(colors) 
 
         total_records = len(data['write']['timestamps']) + len(data['read']['timestamps'])
         write_percentage = (len(data['write']['timestamps']) / total_records) * 100

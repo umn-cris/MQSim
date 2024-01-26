@@ -30,22 +30,46 @@ the time unit is defined in workload xml, for example, wordload_zone_max.xml def
 Download real OLTP traces from [here](https://traces.cs.umass.edu/index.php/Storage/Storage) and store them to MQSim/traces/real_trace_files/
 
 ```bash
-cd traces/real_trace_files/
-python3 ../trans_trace.py Financial/Financial1.spc Financial/fin1_ascii -asu 0-23
-python3 ../trans_trace.py Financial/Financial2.spc Financial/fin2_ascii -asu 0-18
-python3 ../trans_trace.py WebSearch/WebSearch1.spc WebSearch/ws1_ascii -asu 0-2
-python3 ../trans_trace.py WebSearch/WebSearch2.spc WebSearch/ws2_ascii -asu 0-2
-python3 ../trans_trace.py WebSearch/WebSearch3.spc WebSearch/ws3_ascii -asu 0-2
+cd MQSim/traces
+trace_path=real_trace_files/Financial
+python3 trans_trace.py $trace_path/Financial1.spc $trace_path/fin1_ascii -asu 0-23
+python3 trans_trace.py $trace_path/Financial2.spc $trace_path/fin2_ascii -asu 0-18
+trace_path=real_trace_files/WebSearch
+python3 trans_trace.py $trace_path/WebSearch1.spc $trace_path/ws1_ascii -asu 0-2
+python3 trans_trace.py $trace_path/WebSearch2.spc $trace_path/ws2_ascii -asu 0-2
+python3 trans_trace.py $trace_path/WebSearch3.spc $trace_path/ws3_ascii -asu 0-2
 ```
 
 2. YCSB on RocksDB traces
 
 Download YCSB traces from [here](http://iotta.snia.org/traces/block-io) and store them to MQSim/traces/real_trace_files/
 
-```bash
-cd traces/real_trace_files/
+2.1 Purge the trace files to only keep records with `D`, meaning request is sending to device for processing:
 
 ```
+grep -h ' D ' ssdtrace-00 > ssdtrace-purged-00
+```
+
+2.2 Convert the purged trace files to ASCII format:
+
+```bash
+cd MQSim/traces/
+trace_path=real_trace_files/ycsb_rocksdb_snia
+python3 trans_trace_blkparse.py $trace_path/ssdtrace-purged-00 $trace_path/ssdtrace-ascii-00
+python3 trans_trace_blkparse.py $trace_path/ssdtrace-purged-01 $trace_path/ssdtrace-ascii-01
+python3 trans_trace_blkparse.py $trace_path/ssdtrace-purged-26 $trace_path/ssdtrace-ascii-26
+```
+
+2.3 Analysis of the YCSB traces:
+
+Request made by PiD v.s. Time. Modify ssdtrace-00.cfg to change pid list to plot.
+```bash
+cd MQSim/traces/
+trace_path=real_trace_files/ycsb_rocksdb_snia
+python3 plot_time_series_blkparse.py $trace_path/ssdtrace-purged-00 ../graphs/ycsb_rocksdb_00_ts_write100.png ssdtrace-00.cfg
+```
+
+Active time
 
 ## Synthetic Traces
 
