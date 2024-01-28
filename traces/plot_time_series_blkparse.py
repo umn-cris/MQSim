@@ -2,6 +2,8 @@
 # Sample usage:
 #    cd trace/real_trace_files
 #    python3 ../plot_time_series.py ycsb_rocksdb/ssdtrace-00 ../../graphs/0118-rocksdb-00.pdf ssdtrace.cfg
+# Note: Change `color` accordingly to the number of PIDs you want to plot.
+#       By default, 7 colors are available.
 
 import csv
 import sys
@@ -26,8 +28,8 @@ def plot_time_series(input_file, output_file, config_file):
         target_lines = int(config['percentage'] * total_lines / 100)
 
         for i, row in enumerate(reader):
-            if i % 10 != 0:
-                continue
+            # if i % 10 != 0:
+            #     continue
 
             # Remove empty elements from the row
             row = [value for value in row if value != '']

@@ -63,13 +63,23 @@ python3 trans_trace_blkparse.py $trace_path/ssdtrace-purged-26 $trace_path/ssdtr
 2.3 Analysis of the YCSB traces:
 
 Request made by PiD v.s. Time. Modify ssdtrace-00.cfg to change pid list to plot.
+
 ```bash
 cd MQSim/traces/
 trace_path=real_trace_files/ycsb_rocksdb_snia
-python3 plot_time_series_blkparse.py $trace_path/ssdtrace-purged-00 ../graphs/ycsb_rocksdb_00_ts_write100.png ssdtrace-00.cfg
+# After modifying ssdtrace.cfg to change pid list to plot...
+python3 plot_time_series_blkparse.py $trace_path/ssdtrace-purged-00 ../graphs/ycsb_rocksdb_00_ts_write_all.png ssdtrace.cfg
 ```
 
-Active time
+Count read/write requests by PiD. Accepted graph format: png, pdf, svg
+
+```bash
+cd MQSim/traces/
+trace_path=real_trace_files/ycsb_rocksdb_snia
+python3 analyze_data_blkparse.py $trace_path/ssdtrace-purged-00 ../graphs/ycsb_rocksdb_00 png
+```
+
+Active time (TBD)
 
 ## Synthetic Traces
 
