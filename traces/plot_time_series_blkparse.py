@@ -52,10 +52,10 @@ def plot_time_series(input_file, output_file, config_file):
                 pid_data[pid] = {'write': {'timestamps': [], 'lbas': []}, 'read': {'timestamps': [], 'lbas': []}}
 
             if 'D' in row:  # Assuming 'D' indicates a disk request
-                if 'W' in row or 'WS' in row or 'WFS' in row or 'WM' in row:
+                if config['plot_write'] and 'W' in row or 'WS' in row or 'WFS' in row or 'WM' in row:
                     pid_data[pid]['write']['timestamps'].append(timestamp)
                     pid_data[pid]['write']['lbas'].append(lba)
-                elif 'R' in row or 'RS' in row:
+                elif config['plot_read'] and 'R' in row or 'RS' in row:
                     pid_data[pid]['read']['timestamps'].append(timestamp)
                     pid_data[pid]['read']['lbas'].append(lba)
 
@@ -74,9 +74,11 @@ def plot_time_series(input_file, output_file, config_file):
         write_percentage = (len(data['write']['timestamps']) / total_records) * 100
         read_percentage = (len(data['read']['timestamps']) / total_records) * 100
 
-        plt.scatter(data['write']['timestamps'], data['write']['lbas'], marker='+', color=color, label=f'pid={pid} {write_percentage:.2f}% Write')
+        if config['plot_write']:
+            plt.scatter(data['write']['timestamps'], data['write']['lbas'], marker='+', color=color, label=f'pid={pid} {write_percentage:.2f}% Write')
 
-        plt.scatter(data['read']['timestamps'], data['read']['lbas'], marker='.', color=color, label=f'pid={pid} {read_percentage:.2f}% Read')
+        if config['plot_read']:
+            plt.scatter(data['read']['timestamps'], data['read']['lbas'], marker='.', color=color, label=f'pid={pid} {read_percentage:.2f}% Read')
 
     plt.title(f'{os.path.splitext(input_file)[0]} - Time Series Plot of Read and Write Requests (First {config["percentage"]}%)')
     plt.xlabel('Timestamp')
