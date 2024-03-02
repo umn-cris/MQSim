@@ -1,3 +1,7 @@
+# Description: This script analyzes the output of blkparse and generates a histogram of the percentage of read and write requests for each PID.
+# Sample usage:
+#   python3 analyze_data_blkparse.py real_trace_files/ycsb_rocksdb_snia/ssdtrace-purged-00 ../graphs/0118-rocksdb-00.pdf pdf
+
 import csv
 import sys
 import os
@@ -5,6 +9,8 @@ import matplotlib.pyplot as plt
 
 def analyze_pid(input_file, output_graph, extension):
     pid_data = {}
+    min_sector_number = sys.maxsize
+    max_sector_number = -sys.maxsize - 1
 
     with open(input_file, 'r') as infile:
         reader = csv.reader(infile, delimiter=' ')
@@ -14,7 +20,13 @@ def analyze_pid(input_file, output_graph, extension):
                 # Remove empty elements from the row
                 row = [value for value in row if value != '']
 
-                _, _, _, timestamp, pid, _, _, _, _, _, _ = map(str.strip, row)
+                _, _, _, timestamp, pid, _, _, sector_id, _, _, _ = map(str.strip, row)
+
+                sector_id = int(sector_id)
+
+                # Update min and max block numbers
+                min_sector_number = min(min_sector_number, sector_id)
+                max_sector_number = max(max_sector_number, sector_id)
 
                 if pid not in pid_data:
                     pid_data[pid] = {'total_records': 0, 'read_count': 0, 'write_count': 0}
@@ -35,10 +47,13 @@ def analyze_pid(input_file, output_graph, extension):
 
     for pid, data in sorted_pid_data.items():
         total_records = data['total_records']
-        read_percentage = (data['read_count'] / total_records) * 100 
-        write_percentage = (data['write_count'] / total_records) * 100 
+        read_percentage = (data['read_count'] / total_records) * 100
+        write_percentage = (data['write_count'] / total_records) * 100
 
         print(f"[pid={pid}, {total_records} records, read={read_percentage:.2f}%, write={write_percentage:.2f}%]")
+
+    print(f"Minimum Sector Number: {min_sector_number}")
+    print(f"Maximum Sector Number: {max_sector_number}")
 
     plot_histogram(sorted_pid_data, output_graph, extension)
 

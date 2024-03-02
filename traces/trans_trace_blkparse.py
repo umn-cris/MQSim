@@ -1,3 +1,7 @@
+# Description: This script transforms the trace file format from blkparse to the format used by the simulator.
+# python3 trans_trace_blkparse.py $trace_path/ssdtrace-purged-00 $trace_path/ssdtrace-ascii-00
+# python3 trans_trace_blkparse.py $trace_path/ssdtrace-purged-01 $trace_path/ssdtrace-ascii-01
+# python3 trans_trace_blkparse.py $trace_path/ssdtrace-purged-26 $trace_path/ssdtrace-ascii-26
 import csv
 import sys
 import argparse
