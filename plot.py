@@ -212,9 +212,24 @@ def plot_suite_zonesize(result):
     # plot_multi_y_key(3,tests_seq_w+tests_seq_r+tests_seq_m, 'Zone Size', 'Device_Response_Time', '[ZoneSize] Sequential workloads with various zone sizes',"graphs/zonesize_seq.pdf")
     # plot_multi_y_key(3,tests_rand_w+tests_rand_r+tests_rand_m, 'Zone Size', 'Device_Response_Time', '[ZoneSize] Random workloads with various zone sizes',"graphs/zonesize_rand.pdf")
 
+def plot_suite_ycsb_rocksdb(result):
+    ycsb = [suite['tests'] for suite in result if suite['suite'] == "YCSB_RocksDB"][0]
+    plot_y_key(ycsb, 'Page mapping scheme', 'Average Avg_Queue_Length', '[YCSB_RocksDB] Average Queue Length for YCSB_RocksDB',"graphs/ycsb1.pdf")
+    plot_y_key(ycsb, 'Page mapping scheme', 'Device_Response_Time', '[YCSB_RocksDB] Device Response Time for YCSB_RocksDB',"graphs/ycsb2.pdf")
+    plot_y_key(ycsb, 'Page mapping scheme', 'multiplane_program_cmd', '[YCSB_RocksDB] multiplane_program_cmd for YCSB_RocksDB',"graphs/ycsb3.pdf")
+
+def plot_suite_zonesize_real(result):
+    zs = [suite['tests'] for suite in result if suite['suite'] == "ZoneSizeReal"][0]
+    plot_y_key(zs, 'Zone Size', 'Average Avg_Queue_Length', '[ZoneSizeReal] Average Queue Length for YCSB_RocksDB',"graphs/zonesizereal1.pdf")
+    plot_y_key(zs, 'Zone Size', 'Device_Response_Time', '[ZoneSizeReal] Device Response Time for YCSB_RocksDB',"graphs/zonesizereal2.pdf")
+    plot_y_key(zs, 'Zone Size', 'multiplane_program_cmd', '[ZoneSizeReal] multiplane_program_cmd for YCSB_RocksDB',"graphs/zonesizereal3.pdf")
+
+
 if __name__ == "__main__":
     result = read_json("results/result.json")
     # plot_suite_pagemapinsentisy(result)
     # plot_suite_requestsize(result)
-    plot_suite_multistream(result)
+    # plot_suite_multistream(result)
     # plot_suite_zonesize(result)
+    # plot_suite_ycsb_rocksdb(result)
+    plot_suite_zonesize_real(result)

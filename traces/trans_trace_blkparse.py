@@ -22,7 +22,7 @@ def transform_format(input_file, output_prefix):
                     timestamp = int(float(row[3])* 1e9)  # Convert seconds to nanoseconds
                     device_number = 1
                     lba = row[7]  # Extract LBA 
-                    size_sectors = row[9]  # Extract size in sectors
+                    size_sectors = ( int(row[9]) + 511 ) // 512 # Extract size in sectors
                     request_type = 0 if row[6].upper() in {'W', 'WS'} else 1  # 0 for write, 1 for read
 
                     output_writer.writerow([timestamp, device_number, lba, size_sectors, request_type])

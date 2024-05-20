@@ -39,6 +39,10 @@ def main():
 
                 cmd = os.getcwd()+"/MQSim -i "+ssdcfg+" -w "+workload
                 os.system(cmd)
+
+                # Move log files to result directory if it's ZoneSizeReal test
+                if suite_name == 'ZoneSizeReal':
+                    os.system('mv *.log '+result_dir)
         
                 # move all scenario xml to result directory
                 os.chdir('workload/'+suite_name)

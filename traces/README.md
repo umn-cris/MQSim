@@ -26,7 +26,7 @@ the time unit is defined in workload xml, for example, wordload_zone_max.xml def
 
 ## Real Traces
 
-1. OLTP traces
+### 1. OLTP traces
 Download real OLTP traces from [here](https://traces.cs.umass.edu/index.php/Storage/Storage) and store them to MQSim/traces/real_trace_files/
 
 ```bash
@@ -40,9 +40,9 @@ python3 trans_trace.py $trace_path/WebSearch2.spc $trace_path/ws2_ascii -asu 0-2
 python3 trans_trace.py $trace_path/WebSearch3.spc $trace_path/ws3_ascii -asu 0-2
 ```
 
-2. YCSB on RocksDB traces
+### 2. YCSB on RocksDB traces
 
-Download YCSB traces from [here](http://iotta.snia.org/traces/block-io) and store them to MQSim/traces/real_trace_files/
+Download YCSB traces from [here](http://iotta.snia.org/traces/block-io) and store them to `MQSim/traces/real_trace_files/`
 
 2.1 Purge the trace files to only keep records with `D`, meaning request is sending to device for processing:
 
