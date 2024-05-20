@@ -743,7 +743,7 @@ namespace SSD_Components
 		unsigned int block_no_per_subzone = zone_size_in_byte / zone_p_level / block_size_in_byte;
 		unsigned int page_no_per_zone = zone_size_in_byte / page_size_in_byte;
 		
-		Zone_ID_type zoneID = lpn / page_no_per_zone; 
+		Zone_ID_type zoneID = lpn / page_no_per_zone;
 		zoneOffset = lpn % page_no_per_zone;
 		if (domain->Channel_No_Per_Zone == 1 && 
 			domain->Chip_No_Per_Zone == 1 && 
@@ -754,6 +754,8 @@ namespace SSD_Components
 		} else { // any number of parallelism in one zone, zone_p_level is larger than 1, we will use multiple channels, chips, dies, planes. That means, one zone's subzone and blocks are not contiguous in one plane.
 			index = zoneOffset ;
 		}
+		fzm->open_zone(zoneID);
+		// fzm->log_zones();
 		switch (domain->ZoneAllocationScheme) {
 			case Zone_Allocation_Scheme_Type::CWDP:
 				address.ChannelID = domain->Channel_ids[(unsigned int)(index % channel_count)];

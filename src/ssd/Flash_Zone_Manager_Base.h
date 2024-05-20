@@ -29,6 +29,9 @@ namespace SSD_Components
 							unsigned int page_capacity, unsigned int zone_size, 
 							unsigned int channel_no_per_zone, unsigned int chip_no_per_zone, unsigned int die_no_per_zone, unsigned int plane_no_per_zone);
 		virtual ~Flash_Zone_Manager_Base();
+		
+		void open_zone(unsigned int zone_id); // enqueue a zone into open_zones list, if it's already in it, bring the zone to the front of the list, the least recently used zone is at the end of the list and will be closed first
+
 		unsigned int zone_count;
 		unsigned int zone_size;
 		NVM::FlashMemory::Zone **zones;
@@ -38,7 +41,10 @@ namespace SSD_Components
 		unsigned int Chip_no_per_zone;
 		unsigned int Die_no_per_zone;
 		unsigned int Plane_no_per_zone;
-		
+
+		unsigned int max_open_zone = 14;
+		unsigned int open_zones[14];
+		unsigned int total_zones_opened = 0;
 
 	protected:
 		//GC_and_WL_Unit_Base *gc_and_wl_unit;
