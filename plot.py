@@ -35,9 +35,17 @@ def select_y_array(tests, y_key):
     """Return a list of y values"""
     return [test[y_key] for test in tests]
 
-def plot_y_key(tests, x_key, y_key, title, output_path):
+import matplotlib.pyplot as plt
+
+def plot_y_key(tests, x_key, y_key, title, output_path, is_sorted=False):
     x = select_from_tag(tests, 'desc')
     y = select_y_array(tests, y_key)
+    
+    if is_sorted:
+        # Sort the x and y arrays together based on y values
+        sorted_pairs = sorted(zip(x, y), key=lambda pair: pair[1])
+        x, y = zip(*sorted_pairs)
+    
     if y_key == "Device_Response_Time":
         y_key = "Device Response Time" + " (ns)"
 
@@ -58,7 +66,7 @@ def plot_y_key(tests, x_key, y_key, title, output_path):
     for i, value in enumerate(y):
         ax.text(x[i], y[i], str(value), horizontalalignment='center', verticalalignment='bottom')
 
-    ax.bar(x,y)
+    ax.bar(x, y)
 
     plt.xticks(rotation='vertical')
     plt.tight_layout()
@@ -212,11 +220,13 @@ def plot_suite_zonesize(result):
     # plot_multi_y_key(3,tests_seq_w+tests_seq_r+tests_seq_m, 'Zone Size', 'Device_Response_Time', '[ZoneSize] Sequential workloads with various zone sizes',"graphs/zonesize_seq.pdf")
     # plot_multi_y_key(3,tests_rand_w+tests_rand_r+tests_rand_m, 'Zone Size', 'Device_Response_Time', '[ZoneSize] Random workloads with various zone sizes',"graphs/zonesize_rand.pdf")
 
-def plot_suite_ycsb_rocksdb(result):
-    ycsb = [suite['tests'] for suite in result if suite['suite'] == "YCSB_RocksDB"][0]
-    plot_y_key(ycsb, 'Page mapping scheme', 'Average Avg_Queue_Length', '[YCSB_RocksDB] Average Queue Length for YCSB_RocksDB',"graphs/ycsb1.pdf")
-    plot_y_key(ycsb, 'Page mapping scheme', 'Device_Response_Time', '[YCSB_RocksDB] Device Response Time for YCSB_RocksDB',"graphs/ycsb2.pdf")
-    plot_y_key(ycsb, 'Page mapping scheme', 'multiplane_program_cmd', '[YCSB_RocksDB] multiplane_program_cmd for YCSB_RocksDB',"graphs/ycsb3.pdf")
+def plot_suite_page_mapping_scheme(result, suite_name_full="ZN540FioWrite", is_sorted=False):
+    print("Sorted"+str(is_sorted))
+    suite_tests = [suite['tests'] for suite in result if suite['suite'] == suite_name_full][0]
+    plot_y_key(suite_tests, 'Page mapping scheme', 'Average Avg_Queue_Length', '['+suite_name_full+']'+'Average Queue Length',"graphs/"+suite_name_full+"avg-qlen" + ("_sorted" if sorted else "") + ".pdf", sorted)
+    plot_y_key(suite_tests, 'Page mapping scheme', 'Device_Response_Time', '['+suite_name_full+']'+'Device Response Time',"graphs/"+suite_name_full+"_resp-time" + ("_sorted" if is_sorted else "") + ".pdf", is_sorted)
+    plot_y_key(suite_tests, 'Page mapping scheme', 'multiplane_program_cmd', '['+suite_name_full+']'+'multiplane_program_cmd',"graphs/"+suite_name_full+"_multiplane" + ("_sorted" if sorted else "") + ".pdf", sorted)
+    plot_y_key(suite_tests, 'Page mapping scheme', 'iops', '['+suite_name_full+']'+'IOPS',"graphs/"+suite_name_full+"_iops" + ("_sorted" if sorted else "") + ".pdf", sorted)
 
 def plot_suite_zonesize_real(result):
     zs = [suite['tests'] for suite in result if suite['suite'] == "ZoneSizeReal"][0]
@@ -231,5 +241,8 @@ if __name__ == "__main__":
     # plot_suite_requestsize(result)
     # plot_suite_multistream(result)
     # plot_suite_zonesize(result)
-    # plot_suite_ycsb_rocksdb(result)
-    plot_suite_zonesize_real(result)
+    # plot_suite_page_mapping_scheme(result,"YCSB_RocksDB")
+    plot_suite_page_mapping_scheme(result,"ZN540FioWrite")
+    plot_suite_page_mapping_scheme(result,"ZN540RocksDBOverwrite")
+    plot_suite_page_mapping_scheme(result,"ZN540RocksDBReadWhileWriting")
+    # plot_suite_zonesize_real(result)
