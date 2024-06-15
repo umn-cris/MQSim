@@ -22,8 +22,34 @@ namespace SSD_Components
 		}
 	}
 
-	Flash_Zone_Manager_Base::~Flash_Zone_Manager_Base() 
+	Flash_Zone_Manager_Base::~Flash_Zone_Manager_Base()
 	{
 		delete[] zones;
+	}
+
+	void Flash_Zone_Manager_Base::open_zone(unsigned int zone_id)
+	{
+		// put a zone id in the begining of the open_zones list
+		// if the zone is already in the list, bring it to the front of the list, the least recently used zone is at the end of the list and will be remove from the list
+		// if it's not in it, then add it to the front of the list and remove the least recently used zone from the list
+
+		for (unsigned int i = 0; i < max_open_zone; i++)
+		{
+			if (open_zones[i] == zone_id)
+			{
+				for (unsigned int j = i; j > 0; j--)
+				{
+					open_zones[j] = open_zones[j - 1];
+				}
+				open_zones[0] = zone_id;
+				return;
+			}
+		}
+		for (unsigned int i = max_open_zone - 1; i > 0; i--)
+		{
+			open_zones[i] = open_zones[i - 1];
+		}
+		open_zones[0] = zone_id;
+		Stats::Zone_Opened_Count++;
 	}
 }

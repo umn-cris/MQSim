@@ -888,6 +888,10 @@ namespace SSD_Components
 		val = std::to_string(double(Stats::Total_page_movements_for_wl) / double(Stats::Total_wl_executions));
 		xmlwriter.Write_attribute_string_inline(attr, val);
 
+		attr = "Zone_Opened_Count";
+		val = std::to_string(Stats::Zone_Opened_Count);
+		xmlwriter.Write_attribute_string_inline(attr, val);
+
 		xmlwriter.Write_end_element_tag();
 	}
 
