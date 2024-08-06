@@ -28,7 +28,8 @@ def parse(suite, tags = {}):
             
             interleave_program_cmd = float(root.find('.//SSDDevice.FTL').attrib['Issued_Flash_Interleaved_Program_CMD'])
             multiplane_program_cmd = float(root.find('.//SSDDevice.FTL').attrib['Issued_Flash_Multiplane_Program_CMD'])
-            copy_program_cmd = float(root.find('.//SSDDevice.FTL').attrib['Issued_Flash_Copyback_Program_CMD'])
+            zone_opened_count = float(root.find('.//SSDDevice.FTL').attrib['Zone_Opened_Count'])
+            copyback_program_cmd = float(root.find('.//SSDDevice.FTL').attrib['Issued_Flash_Copyback_Program_CMD'])
 
             # Define the XPath query
             xpath_query = './/SSDDevice.TSU.User_Write_TR_Queue.Priority.HIGH'
@@ -66,7 +67,7 @@ def parse(suite, tags = {}):
                 mTags['workload_type2']= "read"
                 mTags['write_percent'] = "0"
             global suite_dict
-            suite_dict.get("tests").append({'time': now, 'tags': mTags, 'scenario': filename, 'workload': workload, 'bandwidth': bandwidth, 'iops': iops, 'Device_Response_Time': Device_Response_Time, 'interleave_program_cmd': interleave_program_cmd, 'multiplane_program_cmd': multiplane_program_cmd, 'copy_program_cmd': copy_program_cmd, 'Average Avg_Queue_Length': avg_avg_queue_length, 'Average STDev_Queue_Length': avg_stdev_queue_length})
+            suite_dict.get("tests").append({'time': now, 'tags': mTags, 'scenario': filename, 'workload': workload, 'bandwidth': bandwidth, 'iops': iops, 'Device_Response_Time': Device_Response_Time, 'interleave_program_cmd': interleave_program_cmd, 'multiplane_program_cmd': multiplane_program_cmd, 'copy_program_cmd': copyback_program_cmd, 'zone_opened_count': zone_opened_count, 'Average Avg_Queue_Length': avg_avg_queue_length, 'Average STDev_Queue_Length': avg_stdev_queue_length})
             
 
 def parse_flush(suite):

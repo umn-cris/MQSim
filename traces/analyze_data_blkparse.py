@@ -34,7 +34,7 @@ def analyze_pid(input_file, output_graph, extension):
                 pid_data[pid]['total_records'] += 1
 
                 if 'D' in row:  # Assuming 'D' indicates a disk request
-                    if 'R' in row or 'RS' in row:
+                    if 'R' in row or 'RS' in row or 'RA' in row:
                         pid_data[pid]['read_count'] += 1
                     elif 'W' in row or 'WS' in row or 'WFS' in row or 'WM' in row:
                         pid_data[pid]['write_count'] += 1

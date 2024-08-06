@@ -35,6 +35,7 @@
             "type": "python",
             "request": "launch",
             "program": "${file}",
+            "args": ["traces/real_trace_files/ZN540_zbdbench/trace_zbdbench_rocksdb_overwrite", "graphs/zn540-rocksdb-overwrite-ts.pdf", "traces/ssdtrace.cfg"],
             "console": "integratedTerminal",
             "justMyCode": true
         },

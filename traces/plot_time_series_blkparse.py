@@ -38,7 +38,7 @@ def plot_time_series(input_file, output_file, config_file):
                 _, _, _, timestamp, pid, _, rw, lba, _, size_in_sector, _ = map(str.strip, row)
 
             except ValueError:
-                print("Invalid row format: " + str(row))
+                # print("Invalid row format: " + str(row))
                 continue
 
 
@@ -55,7 +55,7 @@ def plot_time_series(input_file, output_file, config_file):
                 if config['plot_write'] and 'W' in row or 'WS' in row or 'WFS' in row or 'WM' in row:
                     pid_data[pid]['write']['timestamps'].append(timestamp)
                     pid_data[pid]['write']['lbas'].append(lba)
-                elif config['plot_read'] and 'R' in row or 'RS' in row:
+                elif config['plot_read'] and 'R' in row or 'RS' in row or 'RA' in row:
                     pid_data[pid]['read']['timestamps'].append(timestamp)
                     pid_data[pid]['read']['lbas'].append(lba)
 
